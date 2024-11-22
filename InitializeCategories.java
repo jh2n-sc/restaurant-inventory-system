@@ -2,27 +2,32 @@ import java.util.*;
 import java.io.*;
 
 class InitializeCategories {
-    String[] categoryNames;
+    public static String[] categoryNames;
 
     public static void Initialize (){
         File category = new File("categories.txt");
-        categoryNames = new String[sizeOfCategory];
+        categoryNames = new String[sizeOfCategory()];
         try (Scanner scanner = new Scanner(category)){
+            int i = 0;
             while (scanner.hasNext()){
                 categoryNames[i] = scanner.nextLine();
+                i++;
             }
         } catch (FileNotFoundException e){
             System.out.println("File not found(1): " + e.getMessage());
         }
     }
 
-    private int sizeOfCategory(){
+    private static int sizeOfCategory(){
         File category = new File("categories.txt");
-        Scanner scanner = new Scanner(category);
 
-        int size = 0;
-        while (scanner.hasNext){
-            size++;
+        try (Scanner scanner = new Scanner(category)){
+            int size = 0;
+            while (scanner.hasNext()){
+                size++;
+            }
+        } catch (FileNotFoundException e){
+            System.out.println("File not found(2): " + e.getMessage());    
         }
         
         scanner.close();
@@ -31,6 +36,6 @@ class InitializeCategories {
     }
 
     public String[] getCategories (){
-        return 
+        return categoryNames;
     }
 }
