@@ -13,6 +13,8 @@ class InitializeCategories {
                 categoryNames[i] = scanner.nextLine();
                 i++;
             }
+
+            scanner.close();
         } catch (FileNotFoundException e){
             System.out.println("File not found(1): " + e.getMessage());
         }
@@ -21,17 +23,16 @@ class InitializeCategories {
     private static int sizeOfCategory(){
         File category = new File("categories.txt");
 
+        int size = 0;
         try (Scanner scanner = new Scanner(category)){
-            int size = 0;
             while (scanner.hasNext()){
                 size++;
             }
+            scanner.close();
         } catch (FileNotFoundException e){
             System.out.println("File not found(2): " + e.getMessage());    
         }
-        
-        scanner.close();
-
+    
         return size;
     }
 
