@@ -7,8 +7,9 @@ class Category {
     // HashMap key is the name of the ingredient, and HashMap value is the amount of the ingredient
     HashMap<String, Integer> ingredientList = new HashMap<>();
 
-    // The constructor below initializes a file object based on the given category name which is stored
-    // in the String categoryName. The while loop reads the file line by line, expecting a "ingredientName,amount" format.
+    // The constructor below initializes a file object based on the given category name
+    // (given through the contructor's parameter) which is stored in the String categoryName.
+    // The while loop reads the file line by line, expecting a "ingredientName,amount" format.
     // The scanned ingredientName and its corresponding amount is stored in the ingredientList HashMap.     
     String categoryName;
     Category (String category){
