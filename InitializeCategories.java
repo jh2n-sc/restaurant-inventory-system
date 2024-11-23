@@ -5,6 +5,8 @@ class InitializeCategories {
     String[] categories;
     File categoryFile;
 
+    // This method scans throught the categories.txt file and stores all the input into the categories array.
+    // Then, it returns the categories array.
     public String[] getCategories (){
         categoryFile = new File("categories.txt");
         categories = new String[getSize()];
@@ -22,6 +24,7 @@ class InitializeCategories {
         return categories;
     }
 
+    // Private method for getting the number of categories in categories.txt
     private int getSize (){
         categoryFile = new File("categories.txt");
 
