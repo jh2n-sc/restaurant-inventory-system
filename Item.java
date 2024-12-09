@@ -53,6 +53,10 @@ public class Item {
         return stocks.peek();
     }
 
+    public int getQueueSize(){
+        return stocks.size();
+    }
+
     //CLI section
     public void printItem(){
         System.out.println("item name: " + item_Name);

@@ -3,6 +3,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javafx.scene.layout.BorderPane;
+
 public class Category {
     public String category_name;
     private ArrayList<Item> itemList = new ArrayList<>();
@@ -60,6 +62,7 @@ public class Category {
 
     }
 
+    // CLI
     public void printCategoryList(){
         System.out.println("Category: " + category_name);
         Item item;
@@ -74,4 +77,13 @@ public class Category {
             item.printItem();
         }
     }
+    //  CLI
+
+    // FX
+    public void createItemTable(BorderPane innerPane){
+
+    }
+    // FX
+
+
 }

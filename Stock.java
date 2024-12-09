@@ -60,7 +60,7 @@ public class Stock {
         int compareDate = this.expiry.compareTo(presentDate);
         long dateDifference = calcDateDifference();
 
-        if(compareDate <= 0){
+        if(compareDate <= 0){//I feel like im overcomplicating this block
             this.isExpired = true;
         } else {
             this.isExpired = false;

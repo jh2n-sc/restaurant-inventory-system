@@ -3,6 +3,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+
 public class Inventory {
 
     private String restaurantName;
@@ -44,6 +50,7 @@ public class Inventory {
         categoryNames = names;
     }
 
+    // CLI
     public void printInventoryList(){
 
         System.out.println(restaurantName);
@@ -59,4 +66,46 @@ public class Inventory {
             category.printCategoryList();
         }
     }
+    // CLI
+
+    public String getRestaurantName(){
+        return this.restaurantName;
+    }
+
+    // FX
+    public void addStackLayers(BorderPane inventoryPane){
+        Category current;
+        GridPane grid = FX_Utility.createGrid();
+        StackPane stack = new StackPane();
+            stack.setStyle(FX_Utility.fx);
+        BorderPane innerPane; 
+
+        for(int i = 0; i < categories.size(); i++){
+            current = categories.get(i);
+                FX_Utility.createTabLabel(current.category_name, i, grid);
+            innerPane = new BorderPane();
+            stack.getChildren().add(innerPane);
+        }
+        
+
+    
+
+
+        // BorderPane pane = new BorderPane();
+        //     pane.setPadding(new Insets(0));
+        //     pane.setStyle(FX_Utility.fx);
+        //     pane.setTop(grid);
+        
+        // BorderPane innerPane = new BorderPane();
+        //     innerPane.setStyle(FX_Utility.fx);
+        // pane.setCenter(innerPane);
+
+        // inventoryStack.getChildren().addAll(pane);
+        //     StackPane.setAlignment(pane, Pos.CENTER);
+
+        inventoryPane.setTop(grid);
+        inventoryPane.setCenter(stack);
+
+    }
+    // FX
 }
