@@ -10,9 +10,12 @@ public class Stock {
     private Date invoice; //Date of Arrival?
     private Date expiry; //Obvious
     private int amount;
-    private boolean isExpired;
-    private String expiryPrompt;
     // main
+
+    // sub
+    private boolean isExpired; //if the stock is already expired
+    private boolean warnExpiry; // if the stock expires the next day
+    // sub
 
     //static
     private static SimpleDateFormat formatdate = new SimpleDateFormat("yyyy-MM-dd");
@@ -26,6 +29,7 @@ public class Stock {
         this.amount = amount;
         this.unit = unit;
         this.isExpired = false;
+        this.warnExpiry =false;
         presentDate = new Date();
     }
 
@@ -56,15 +60,16 @@ public class Stock {
         int compareDate = this.expiry.compareTo(presentDate);
         long dateDifference = calcDateDifference();
 
-        if(compareDate <= 0 || dateDifference == 0){
+        if(compareDate <= 0){
             this.isExpired = true;
-            if(dateDifference == 0){
-                expiryPrompt = "Expires Tomorrow";
-            } else {
-                expiryPrompt = "EXPIRED";
-            }
         } else {
             this.isExpired = false;
+
+            if(dateDifference == 0){
+                this.warnExpiry = true;
+            } else {
+                this.warnExpiry = false;
+            }
         }
     }
 
@@ -89,7 +94,9 @@ public class Stock {
         System.out.printf("\t%sExpiry:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, expiryDate);
 
         if(this.isExpired){
-            System.out.print("\t" + AnsiAdd.RED + this.expiryPrompt + AnsiAdd.RESET);
+            System.out.print("\t" + AnsiAdd.RED + "EXPIRED" + AnsiAdd.RESET);
+        } else if(this.warnExpiry){
+            System.out.print("\t" + AnsiAdd.RED + "Expires Tomorrow" + AnsiAdd.RESET);
         }
 
         System.out.println();
