@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Category {
-    private String category_name;
+    public String category_name;
     private ArrayList<Item> itemList = new ArrayList<>();
 
     private int item_Number;
@@ -58,5 +58,20 @@ public class Category {
             System.out.println("Did not find Category for " + this.category_name);
         }
 
+    }
+
+    public void printCategoryList(){
+        System.out.println("Category: " + category_name);
+        Item item;
+
+        if(isEmpty){
+            System.out.println("[Empty]");
+            return;
+        }
+
+        for(int i = 0; i < item_Number; i++){
+            item = itemList.get(i);
+            item.printItem();
+        }
     }
 }

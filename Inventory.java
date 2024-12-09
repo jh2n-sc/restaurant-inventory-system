@@ -8,9 +8,11 @@ public class Inventory {
     private String restaurantName;
     private ArrayList<Category> categories = new ArrayList<>();
     private static String categoryNames;
-    private static String filePath = "./content/index/txt";
+    private static String filePath = "./content/index.txt";
+    private boolean categoriesExist;
 
     public Inventory(){
+        this.categoriesExist =  false;
         initializeCategories();
     }
 
@@ -27,7 +29,11 @@ public class Inventory {
                 storename = scanIndex.nextLine();
                 current = new Category(storename);
                 categories.add(current);
-                names = "" + storename + ";";
+                names = names + storename + ";";
+
+                if(!this.categoriesExist){
+                    this.categoriesExist = true;
+                }
             }
 
         } catch(FileNotFoundException err){
@@ -36,5 +42,21 @@ public class Inventory {
         }
 
         categoryNames = names;
+    }
+
+    public void printInventoryList(){
+
+        System.out.println(restaurantName);
+
+        if(!categoriesExist){
+            System.out.println("No Categories Initialized");
+            return;
+        }
+
+        Category category;
+        for(int i = 0; i < categories.size(); i++){
+            category = categories.get(i);
+            category.printCategoryList();
+        }
     }
 }

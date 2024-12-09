@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "testMain",
+            "request": "launch",
+            "mainClass": "testMain",
+            "projectName": "restaurant-inventory-system_d925861b"
+        },
+        {
+            "type": "java",
             "name": "Inventory_Restaurant",
             "request": "launch",
             "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",

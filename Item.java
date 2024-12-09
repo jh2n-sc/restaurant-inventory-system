@@ -1,3 +1,4 @@
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -53,9 +54,16 @@ public class Item {
     }
 
     //CLI section
-    public void itemDisplay(){
+    public void printItem(){
         System.out.println("item name: " + item_Name);
-        System.err.println("\t stock:");
+
+        Iterator<Stock> traverse = stocks.iterator();
+        Stock stockitem;
+        while(traverse.hasNext()){
+            stockitem = traverse.next();
+            stockitem.printStock();
+        }
+
     }
     //CLI section
 
