@@ -1,42 +1,118 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-class Category {
-    File categoryFile;
+import javafx.scene.layout.BorderPane;
 
-    // HashMap key is the name of the ingredient, and HashMap value is the amount of the ingredient
-    HashMap<String, Integer> ingredientList = new HashMap<>();
+public class Category {
+    public String category_name;
+    private ArrayList<Item> itemList = new ArrayList<>();
 
-    // The constructor below initializes a file object based on the given category name
-    // (given through the contructor's parameter) which is stored in the String categoryName.
-    // The while loop reads the file line by line, expecting a "ingredientName,amount" format.
-    // The scanned ingredientName and its corresponding amount is stored in the ingredientList HashMap.     
-    String categoryName;
-    Category (String category){
-        categoryName = category + ".txt";
+    private int item_Number;
+    private boolean isEmpty;
+    private String directory = "./content/";
 
-        categoryFile = new File(categoryName);
+    public Category(String name){
+        this.category_name = name;
+        this.item_Number = 0;
+        this.isEmpty = true;//this feels redundant but hmmmm
 
-        try (Scanner scanner = new Scanner(categoryFile)){
-            while (scanner.hasNext()){
-                String[] tempArray = scanner.nextLine().split(",");
-                int amount = Integer.parseInt(tempArray[1]);
+        if(name.indexOf(" ") != -1){
+            // break; put a string editor to replace " " with "_"
+        }
 
-                ingredientList.put(tempArray[0], amount);
+        this.directory = this.directory + name + ".txt";
+        initializeItems(new File(this.directory));
+    }
+
+    private void initializeItems(File categoryItems){
+        try(Scanner scanItems = new Scanner(categoryItems);){
+            //temporary variables
+            Item current;
+            String store = "";
+            boolean isEmpty = true;
+            int number = 0;
+            //temporary variables
+
+            while(scanItems.hasNextLine()){
+                store = scanItems.nextLine();
+                    current = new Item(store);
+                
+                while(scanItems.hasNextInt()){
+                    store = scanItems.nextLine();
+                    current.addStock(store);
+                }    
+
+                itemList.add(current);
+
+                if(isEmpty){
+                    isEmpty = !isEmpty;
+                }
+                number++;
             }
 
-            scanner.close();
-        } catch (FileNotFoundException e){
-            System.out.println("File not found: " + e.getMessage());
+            this.isEmpty = isEmpty;
+            this.item_Number = number;
+
+        } catch(FileNotFoundException err){
+            err.printStackTrace();
+            System.out.println("Did not find Category for " + this.category_name);
+        }
+
+    }
+
+    public void updateFile(){
+        int flagValue = 0;
+        try{
+            FileWriter categoryWrite = new FileWriter(this.directory, false);
+            BufferedWriter categoryBuffer = new BufferedWriter(categoryWrite);
+
+            Item current;
+            for(int i = 0; i < itemList.size(); i++){
+                current = itemList.get(i);
+                categoryBuffer.write(current.getName());
+                    categoryBuffer.newLine();
+                if(current.stockExists){
+                    categoryBuffer.write(current.getItemStockSummary());
+                        categoryBuffer.newLine();
+                }
+                flagValue++;
+            }
+
+            categoryBuffer.close();
+        } catch(IOException err){
+            System.out.println("Error. Did not UPDATE category " + this.category_name);
+            System.out.println("Flag value: " + flagValue);
+            err.printStackTrace();
         }
     }
 
-    // Method for printing the ingredient and its corresponding amount
-    public void printStock (){
-        for (Map.Entry<String, Integer> entry : ingredientList.entrySet()){
-            String ingredient = entry.getKey();
-            int amount = entry.getValue();
-            System.out.println(ingredient + ": " + amount);
+    // CLI
+    public void printCategoryList(){
+        System.out.println("Category: " + category_name);
+        Item item;
+
+        if(isEmpty){
+            System.out.println("[Empty]");
+            return;
+        }
+
+        for(int i = 0; i < item_Number; i++){
+            item = itemList.get(i);
+            item.printItem();
         }
     }
+    //  CLI
+
+    // FX
+    public void createItemTable(BorderPane innerPane){
+
+    }
+    // FX
+
+
 }

@@ -1,0 +1,38 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Inventory_Restaurant",
+            "request": "launch",
+            "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+            "mainClass": "Inventory_Restaurant",
+            "projectName": "restaurant-inventory-system_d925861b"
+        },
+        {
+            "type": "java",
+            "name": "testMain",
+            "request": "launch",
+            "mainClass": "testMain",
+            "projectName": "restaurant-inventory-system_d925861b"
+        },
+        {
+            "type": "java",
+            "name": "Inventory_Restaurant",
+            "request": "launch",
+            "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+            "mainClass": "Inventory_Restaurant",
+            "projectName": "INVENTORY_68754b6f"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+            "request": "launch",
+            "mainClass": "${file}"
+        }
+    ]
+}
