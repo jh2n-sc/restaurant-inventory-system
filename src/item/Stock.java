@@ -1,3 +1,7 @@
+package src.item;
+
+import src.utils.AnsiAdd;
+
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.text.ParseException;
@@ -19,11 +23,11 @@ public class Stock {
     // sub
 
     //static
-    private static SimpleDateFormat formatdate = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat formatdate = new SimpleDateFormat("yyyy-MM-dd");
     private static Date presentDate;
     //static
 
-    private String itemName;
+    private final String itemName;
 
     public Stock(String itemName, int amount, String unit){
         this.itemName = itemName;
@@ -97,7 +101,7 @@ public class Stock {
 
 
         System.out.print("\t");
-        System.out.printf("%sAmount:%s %-2d %-3s",AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
+        System.out.printf("%sAmount:%s %-2d %-3s", AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
         System.out.printf("\t%sArrived on:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, arrivalDate);
         System.out.printf("\t%sExpiry:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, expiryDate);
 

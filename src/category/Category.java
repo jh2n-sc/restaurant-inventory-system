@@ -1,3 +1,7 @@
+package src.category;
+
+import src.item.Item;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,11 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javafx.scene.layout.BorderPane;
-
 public class Category {
     public String category_name;
-    private ArrayList<Item> itemList = new ArrayList<>();
+    private final ArrayList<Item> itemList = new ArrayList<>();
 
     private int item_Number;
     private boolean isEmpty;
@@ -20,9 +22,9 @@ public class Category {
         this.category_name = name;
         this.item_Number = 0;
         this.isEmpty = true;//this feels redundant but hmmmm
-
-        if(name.indexOf(" ") != -1){
-            // break; put a string editor to replace " " with "_"
+        
+        if (name.contains(" ")) {
+            name = name.replace(" ", "_");
         }
 
         this.directory = this.directory + name + ".txt";
@@ -33,7 +35,7 @@ public class Category {
         try(Scanner scanItems = new Scanner(categoryItems);){
             //temporary variables
             Item current;
-            String store = "";
+            String store;
             boolean isEmpty = true;
             int number = 0;
             //temporary variables
@@ -50,7 +52,7 @@ public class Category {
                 itemList.add(current);
 
                 if(isEmpty){
-                    isEmpty = !isEmpty;
+                    isEmpty = false;
                 }
                 number++;
             }
@@ -60,7 +62,7 @@ public class Category {
 
         } catch(FileNotFoundException err){
             err.printStackTrace();
-            System.out.println("Did not find Category for " + this.category_name);
+            System.out.println("Did not find src.category.Category for " + this.category_name);
         }
 
     }
@@ -72,16 +74,16 @@ public class Category {
             BufferedWriter categoryBuffer = new BufferedWriter(categoryWrite);
 
             Item current;
-            for(int i = 0; i < itemList.size(); i++){
-                current = itemList.get(i);
-                categoryBuffer.write(current.getName());
-                    categoryBuffer.newLine();
-                if(current.stockExists){
-                    categoryBuffer.write(current.getItemStockSummary());
-                        categoryBuffer.newLine();
-                }
-                flagValue++;
-            }
+           for (Item item : itemList) {
+              current = item;
+              categoryBuffer.write(current.getName());
+              categoryBuffer.newLine();
+              if (current.stockExists) {
+                 categoryBuffer.write(current.getItemStockSummary());
+                 categoryBuffer.newLine();
+              }
+              flagValue++;
+           }
 
             categoryBuffer.close();
         } catch(IOException err){
@@ -108,11 +110,14 @@ public class Category {
     }
     //  CLI
 
-    // FX
-    public void createItemTable(BorderPane innerPane){
+    
+    
+//    fx
 
-    }
-    // FX
+//    public void createItemTable(BorderPane innerPane){
+//
+//    }
+//
 
 
 }

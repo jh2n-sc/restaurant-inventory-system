@@ -1,3 +1,5 @@
+package src.item;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -5,24 +7,38 @@ import java.util.Scanner;
 
 public class Item {
     //main
-    private String item_Name;
-    private Queue<Stock> stocks = new LinkedList<>();
+    private final String item_Name;
+    private final Queue<Stock> stocks = new LinkedList<>();
     private int totalStock;
-    //main
 
     //flag
     public boolean stockExists; //to verify if an item has stock or not
-    //flag
 
     //Queue Access
-    private Iterator<Stock> traverse = stocks.iterator();
-
+    private final Iterator<Stock> traverse = stocks.iterator();
+   
+    // Getters
+    public String getName(){
+        return item_Name;
+    }
+    
+    public Stock getFront(){
+        return stocks.peek();
+    }
+    
+    public int getQueueSize(){
+        return stocks.size();
+    }
+    
     public Item(String name){
         this.item_Name = name;
         this.stockExists = false;
         this.totalStock = 0;
     }
 
+    
+    
+    
     public void addStock(String stock){
         Scanner scanString = new Scanner(stock);
 
@@ -40,7 +56,7 @@ public class Item {
         stocks.add(newstock); //enqueue
 
         if(!this.stockExists){
-            this.stockExists = !this.stockExists;
+            this.stockExists = true;
         }
 
         this.totalStock = this.totalStock + size;
@@ -48,18 +64,7 @@ public class Item {
         scanString.close();
     }
 
-    public String getName(){
-        return item_Name;
-    }
-
-    public Stock getFront(){
-        return stocks.peek();
-    }
-
-    public int getQueueSize(){
-        return stocks.size();
-    }
-
+    
     public String getItemStockSummary(){ //summarizes all the stock into one string
         String summary = "";
 
@@ -87,6 +92,8 @@ public class Item {
         }
 
     }
+    
+    
     //CLI section
 
     //FX section

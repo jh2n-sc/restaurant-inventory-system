@@ -1,4 +1,4 @@
-
+package src;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -6,12 +6,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -71,7 +68,7 @@ public class Inventory_Restaurant extends Application{
 
     public void addInventoryBody(BorderPane pane){
         // StackPane inventoryStack = new StackPane();
-        //     inventoryStack.setStyle(FX_Utility.fx);
+        //     inventoryStack.setStyle(src.FX_Utility.fx);
         //     inventoryStack.setPadding(new Insets(5, 5, 5, 5));
 
         BorderPane inventoryPane = new BorderPane();

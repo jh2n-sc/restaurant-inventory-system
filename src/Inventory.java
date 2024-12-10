@@ -1,3 +1,5 @@
+package src;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,18 +8,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import src.category.Category;
 
 public class Inventory {
 
     private String restaurantName;
-    private ArrayList<Category> categories = new ArrayList<>();
-    private static String categoryNames;
-    private static String filePath = "./content/index.txt";
+    private final ArrayList<Category> categories = new ArrayList<>();
+    private static final String filePath = "./content/index.txt";
     private boolean categoriesExist;
 
     public Inventory(){
@@ -27,18 +27,18 @@ public class Inventory {
 
     private void initializeCategories(){
         File indexFile = new File(filePath);
-        String names = "";
+        StringBuilder names = new StringBuilder();
 
         try(Scanner scanIndex = new Scanner(indexFile)){
             Category current;
-            String storename;
+            String storeName;
             this.restaurantName = scanIndex.nextLine();
 
             while(scanIndex.hasNextLine()){
-                storename = scanIndex.nextLine();
-                current = new Category(storename);
+                storeName = scanIndex.nextLine();
+                current = new Category(storeName);
                 categories.add(current);
-                names = names + storename + ";";
+                names.append(storeName).append(";");
 
                 if(!this.categoriesExist){
                     this.categoriesExist = true;
@@ -49,8 +49,8 @@ public class Inventory {
             err.printStackTrace();
             System.out.println("!!File was not Found!!");
         }
-
-        categoryNames = names;
+       
+       String categoryNames = names.toString();
     }
 
     public void updateFile(){
@@ -91,10 +91,10 @@ public class Inventory {
         }
 
         Category category;
-        for(int i = 0; i < categories.size(); i++){
-            category = categories.get(i);
-            category.printCategoryList();
-        }
+       for (Category value : categories) {
+          category = value;
+          category.printCategoryList();
+       }
     }
     // CLI
 
@@ -123,11 +123,11 @@ public class Inventory {
 
         // BorderPane pane = new BorderPane();
         //     pane.setPadding(new Insets(0));
-        //     pane.setStyle(FX_Utility.fx);
+        //     pane.setStyle(src.FX_Utility.fx);
         //     pane.setTop(grid);
         
         // BorderPane innerPane = new BorderPane();
-        //     innerPane.setStyle(FX_Utility.fx);
+        //     innerPane.setStyle(src.FX_Utility.fx);
         // pane.setCenter(innerPane);
 
         // inventoryStack.getChildren().addAll(pane);
