@@ -42,7 +42,7 @@ public class Category {
                 store = scanItems.nextLine();
                     current = new Item(store);
                 
-                while(scanItems.hasNextInt()){
+                while(scanItems.hasNextDouble()){
                     store = scanItems.nextLine();
                     current.addStock(store);
                 }    

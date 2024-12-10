@@ -7,15 +7,13 @@ public class Item {
     //main
     private String item_Name;
     private Queue<Stock> stocks = new LinkedList<>();
-    private int totalStock;
+    private double totalStock;
     //main
 
     //flag
     public boolean stockExists; //to verify if an item has stock or not
     //flag
 
-    //Queue Access
-    private Iterator<Stock> traverse = stocks.iterator();
 
     public Item(String name){
         this.item_Name = name;
@@ -26,7 +24,7 @@ public class Item {
     public void addStock(String stock){
         Scanner scanString = new Scanner(stock);
 
-        int size = scanString.nextInt();
+        double size = scanString.nextDouble();
         String unit = scanString.next();
         String date;
 
@@ -63,12 +61,14 @@ public class Item {
     public String getItemStockSummary(){ //summarizes all the stock into one string
         String summary = "";
 
+        Iterator<Stock> traverse = this.stocks.iterator();
+
         Stock current;
-        while(this.traverse.hasNext()){
+        while(traverse.hasNext()){
             current = traverse.next();
             summary = summary + current.getStockSummary();
 
-            if(this.traverse.hasNext()){
+            if(traverse.hasNext()){
                 summary = summary + "\n";
             }
         }
@@ -80,8 +80,10 @@ public class Item {
     public void printItem(){
         System.out.println("item name: " + item_Name);
 
+        Iterator<Stock> traverse = this.stocks.iterator();
+
         Stock stockitem;
-        while(this.traverse.hasNext()){
+        while(traverse.hasNext()){
             stockitem = traverse.next();
             stockitem.printStock();
         }

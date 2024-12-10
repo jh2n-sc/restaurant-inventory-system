@@ -70,15 +70,17 @@ public class Inventory_Restaurant extends Application{
     }
 
     public void addInventoryBody(BorderPane pane){
-        // StackPane inventoryStack = new StackPane();
-        //     inventoryStack.setStyle(FX_Utility.fx);
-        //     inventoryStack.setPadding(new Insets(5, 5, 5, 5));
 
         BorderPane inventoryPane = new BorderPane();
             inventoryPane.setStyle(FX_Utility.fx);
             inventoryPane.setPadding(new Insets(5, 5, 5, 5));
 
-        inventory.addStackLayers(inventoryPane);
+        BorderPane viewPane = new BorderPane();
+            viewPane.setStyle("-fx-border-color: blue; -fx-border-width: 1px; -fx-border-style: solid;");
+            viewPane.setMaxWidth(400);
+            viewPane.setPrefWidth(300);
+
+        inventory.addStackLayers(inventoryPane, viewPane);
 
         pane.setCenter(inventoryPane);
     }

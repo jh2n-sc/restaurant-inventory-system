@@ -8,6 +8,8 @@ import java.util.Scanner;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -103,7 +105,7 @@ public class Inventory {
     }
 
     // FX
-    public void addStackLayers(BorderPane inventoryPane){
+    public void addStackLayers(BorderPane inventoryPane, BorderPane viewPane){
         Category current;
         GridPane grid = FX_Utility.createGrid();
         StackPane stack = new StackPane();
@@ -112,29 +114,18 @@ public class Inventory {
 
         for(int i = 0; i < categories.size(); i++){
             current = categories.get(i);
-                FX_Utility.createTabLabel(current.category_name, i, grid);
+            Label label = FX_Utility.createTabLabel(current.category_name);
+                    grid.add(label, i, 0);
             innerPane = new BorderPane();
             stack.getChildren().add(innerPane);
         }
         
 
-    
-
-
-        // BorderPane pane = new BorderPane();
-        //     pane.setPadding(new Insets(0));
-        //     pane.setStyle(FX_Utility.fx);
-        //     pane.setTop(grid);
-        
-        // BorderPane innerPane = new BorderPane();
-        //     innerPane.setStyle(FX_Utility.fx);
-        // pane.setCenter(innerPane);
-
-        // inventoryStack.getChildren().addAll(pane);
-        //     StackPane.setAlignment(pane, Pos.CENTER);
 
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(stack);
+        inventoryPane.setRight(viewPane);
+        // inventoryPane.getChildren().remove(viewPane);
 
     }
     // FX

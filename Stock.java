@@ -9,7 +9,7 @@ public class Stock {
     private String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
     private Date invoice; //Date of Arrival? //constant
     private Date expiry; //Obvious //constant
-    private int amount;
+    private double amount;
     private String stockSummary; //constant values in a string
     // main
 
@@ -25,7 +25,7 @@ public class Stock {
 
     private String itemName;
 
-    public Stock(String itemName, int amount, String unit){
+    public Stock(String itemName, double amount, String unit){
         this.itemName = itemName;
         this.amount = amount;
         this.unit = unit;
@@ -97,7 +97,7 @@ public class Stock {
 
 
         System.out.print("\t");
-        System.out.printf("%sAmount:%s %-2d %-3s",AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
+        System.out.printf("%sAmount:%s %s %-3s",AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
         System.out.printf("\t%sArrived on:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, arrivalDate);
         System.out.printf("\t%sExpiry:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, expiryDate);
 

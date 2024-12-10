@@ -27,7 +27,7 @@ public class FX_Utility {
         return grid;
     }
 
-    public static void createTabLabel(String text, int index, GridPane grid){
+    public static Label createTabLabel(String text){
         Label label = new Label(text);
             label.setFont(Font.font("sans serif", FontWeight.BLACK, 18));
             label.setTextAlignment(TextAlignment.CENTER);
@@ -37,6 +37,6 @@ public class FX_Utility {
             label.setPadding(new Insets(2, 10, 2, 10));
 
             label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
-        grid.add(label, index, 0);
+        return label;
     }
 }
