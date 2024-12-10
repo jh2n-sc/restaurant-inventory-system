@@ -14,6 +14,9 @@ public class Item {
     public boolean stockExists; //to verify if an item has stock or not
     //flag
 
+    //Queue Access
+    private Iterator<Stock> traverse = stocks.iterator();
+
     public Item(String name){
         this.item_Name = name;
         this.stockExists = false;
@@ -57,13 +60,28 @@ public class Item {
         return stocks.size();
     }
 
+    public String getItemStockSummary(){ //summarizes all the stock into one string
+        String summary = "";
+
+        Stock current;
+        while(this.traverse.hasNext()){
+            current = traverse.next();
+            summary = summary + current.getStockSummary();
+
+            if(this.traverse.hasNext()){
+                summary = summary + "\n";
+            }
+        }
+
+        return summary;
+    }
+
     //CLI section
     public void printItem(){
         System.out.println("item name: " + item_Name);
 
-        Iterator<Stock> traverse = stocks.iterator();
         Stock stockitem;
-        while(traverse.hasNext()){
+        while(this.traverse.hasNext()){
             stockitem = traverse.next();
             stockitem.printStock();
         }

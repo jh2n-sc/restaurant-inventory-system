@@ -1,5 +1,8 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -60,6 +63,32 @@ public class Category {
             System.out.println("Did not find Category for " + this.category_name);
         }
 
+    }
+
+    public void updateFile(){
+        int flagValue = 0;
+        try{
+            FileWriter categoryWrite = new FileWriter(this.directory, false);
+            BufferedWriter categoryBuffer = new BufferedWriter(categoryWrite);
+
+            Item current;
+            for(int i = 0; i < itemList.size(); i++){
+                current = itemList.get(i);
+                categoryBuffer.write(current.getName());
+                    categoryBuffer.newLine();
+                if(current.stockExists){
+                    categoryBuffer.write(current.getItemStockSummary());
+                        categoryBuffer.newLine();
+                }
+                flagValue++;
+            }
+
+            categoryBuffer.close();
+        } catch(IOException err){
+            System.out.println("Error. Did not UPDATE category " + this.category_name);
+            System.out.println("Flag value: " + flagValue);
+            err.printStackTrace();
+        }
     }
 
     // CLI

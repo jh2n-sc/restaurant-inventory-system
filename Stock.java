@@ -6,10 +6,11 @@ import java.text.SimpleDateFormat;
 public class Stock {
 
     // main
-    private String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars
-    private Date invoice; //Date of Arrival?
-    private Date expiry; //Obvious
+    private String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
+    private Date invoice; //Date of Arrival? //constant
+    private Date expiry; //Obvious //constant
     private int amount;
+    private String stockSummary; //constant values in a string
     // main
 
     // sub
@@ -31,6 +32,7 @@ public class Stock {
         this.isExpired = false;
         this.warnExpiry =false;
         presentDate = new Date();
+        this.stockSummary = unit;
     }
 
     public void setDateArrived(String date){
@@ -42,6 +44,7 @@ public class Stock {
         }
 
         System.out.println("PresentDate : " + formatdate.format(presentDate));
+        this.stockSummary = this.stockSummary + " " + date;
     }
 
     public void setExpiryDate(String date){
@@ -54,6 +57,7 @@ public class Stock {
         
         checkifExpired();
         System.out.println("expired: " + this.isExpired);
+        this.stockSummary = this.stockSummary + " " + date;
     }
 
     public void checkifExpired(){
@@ -81,6 +85,10 @@ public class Stock {
             System.out.println("Difference: " + diff);
 
         return diff;
+    }
+
+    public String getStockSummary(){ //returns string for storing during file updates
+        return amount + " " + this.stockSummary;
     }
 
     public void printStock(){

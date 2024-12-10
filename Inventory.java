@@ -1,5 +1,8 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -48,6 +51,33 @@ public class Inventory {
         }
 
         categoryNames = names;
+    }
+
+    public void updateFile(){
+        try{
+            FileWriter indexWrite = new FileWriter(filePath, false);
+            BufferedWriter indexBuffer = new BufferedWriter(indexWrite);
+
+            indexBuffer.write(restaurantName);
+                indexBuffer.newLine();
+
+            Category current;
+            for(int i = 0; i < categories.size(); i++){
+                current = categories.get(i);
+                indexBuffer.write(current.category_name);
+                
+                if(i < categories.size() - 1){
+                    indexBuffer.newLine();
+                }
+
+                current.updateFile();
+            }
+
+            indexBuffer.close();
+        } catch(IOException err){
+            System.out.println("ERROR. Did not UPDATE index.");
+            err.printStackTrace();
+        }
     }
 
     // CLI
