@@ -37,6 +37,11 @@ public class Category {
     */
    private String directory = "./content/";
    
+   
+   
+   
+   
+   
    /**
     * Constructs a Category object with the specified name.
     * Initializes the associated file for storing category data.
@@ -55,6 +60,11 @@ public class Category {
       this.directory = this.directory + name + ".txt";
       initializeItems(new File(this.directory));
    }
+   
+   
+   
+   
+   
    
    /**
     * Initializes items from a given file.
@@ -94,6 +104,10 @@ public class Category {
       }
    }
    
+   
+   
+   
+   
    /**
     * Updates the category file to reflect the current state of items in the category.
     */
@@ -117,6 +131,10 @@ public class Category {
          err.printStackTrace();
       }
    }
+   
+   
+   
+   
    
    /**
     * Prints the list of items in the category to the console.

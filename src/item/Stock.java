@@ -21,19 +21,34 @@ import java.text.SimpleDateFormat;
 
 public class Stock {
     
+    /**
+     * Represents stock information for an item.
+     */
     private final String unit; // Unit of measurement for the stock (e.g., Cases, Bags)
     private Date invoice; // Date when the stock arrived
     private Date expiry; // Expiry date of the stock
     private final int amount; // Quantity of the stock
     private String stockSummary; // A summary string of the stock's details
     
+    /**
+     * Flags indicating the stock status.
+     */
     private boolean isExpired; // Indicates if the stock is expired
     private boolean warnExpiry; // Indicates if the stock expires tomorrow
     
+    /**
+     * Static date format used for parsing dates.
+     */
     private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd"); // Date format for parsing
     private static Date presentDate; // Current date used for comparison
     
-    private final String itemName; // The name of the item this stock represents
+    /**
+     * The name of the item this stock represents.
+     */
+    private final String itemName;
+    
+    
+    
     
     /**
      * Creates a new Stock object for a specific item.
@@ -52,6 +67,9 @@ public class Stock {
         this.stockSummary = unit;
     }
     
+    
+    
+    
     /**
      * Sets the date when the stock arrived.
      *
@@ -66,6 +84,9 @@ public class Stock {
         }
         this.stockSummary = this.stockSummary + " " + date;
     }
+    
+    
+    
     
     /**
      * Sets the expiry date for the stock.
@@ -83,6 +104,10 @@ public class Stock {
         this.stockSummary = this.stockSummary + " " + date;
     }
     
+    
+    
+    
+    
     /**
      * Checks if the stock is expired or will expire tomorrow.
      */
@@ -98,6 +123,10 @@ public class Stock {
         }
     }
     
+    
+    
+    
+    
     /**
      * Calculates the difference in days between the expiry date and the current date.
      *
@@ -109,6 +138,10 @@ public class Stock {
         return diff;
     }
     
+    
+    
+    
+    
     /**
      * Returns a summary string of the stock for storing or updating files.
      *
@@ -117,6 +150,9 @@ public class Stock {
     public String getStockSummary() {
         return amount + " " + this.stockSummary;
     }
+    
+    
+    
     
     /**
      * Prints detailed information about the stock to the console, including the amount, arrival date,

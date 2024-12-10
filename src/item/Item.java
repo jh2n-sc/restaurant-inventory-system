@@ -38,6 +38,10 @@ public class Item {
     */
    private final Iterator<Stock> traverse = stocks.iterator();
    
+   
+   
+   
+   
    /**
     * Constructs an Item with the specified name.
     *
@@ -49,6 +53,9 @@ public class Item {
       this.totalStock = 0;
    }
    
+   
+   
+   
    /**
     * Gets the name of the item.
     *
@@ -57,6 +64,10 @@ public class Item {
    public String getName() {
       return item_Name;
    }
+   
+   
+   
+   
    
    /**
     * Retrieves the stock entry at the front of the stock queue.
@@ -67,6 +78,11 @@ public class Item {
       return stocks.peek();
    }
    
+   
+   
+   
+   
+   
    /**
     * Gets the number of stock entries for the item.
     *
@@ -75,6 +91,10 @@ public class Item {
    public int getQueueSize() {
       return stocks.size();
    }
+   
+   
+   
+   
    
    /**
     * Adds a new stock entry to the item based on the provided string.
@@ -104,6 +124,10 @@ public class Item {
       scanString.close();
    }
    
+   
+   
+   
+   
    /**
     * Summarizes all the stock details into a single string.
     *
@@ -123,15 +147,21 @@ public class Item {
       return summary.toString();
    }
    
+   
+   
+   
+   
+   
    /**
     * Prints the details of the item and all its associated stock entries to the console.
     */
    public void printItem() {
        System.out.println("item name: " + item_Name);
        
-       for (Stock stockitem : stocks) {
-           stockitem.printStock();
+       for (Stock stockItem : stocks) {
+           stockItem.printStock();
        }
+       
    }
 
    

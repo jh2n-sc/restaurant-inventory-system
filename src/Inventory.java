@@ -36,6 +36,9 @@ public class Inventory {
     */
    private boolean categoriesExist;
    
+   
+   
+   
    /**
     * Constructs an Inventory object and initializes categories by reading from the file.
     */
@@ -44,10 +47,7 @@ public class Inventory {
       initializeCategories();
    }
    
-   /**
-    * Reads categories from the inventory file and populates the categories list.
-    * Also initializes the restaurant name.
-    */
+
     
     /**
      * Retrieves the name of the restaurant.
@@ -57,7 +57,13 @@ public class Inventory {
     public String getRestaurantName() {
         return this.restaurantName;
     }
-   
+    
+    
+    
+    /**
+     * Reads categories from the inventory file and populates the categories list.
+     * Also initializes the restaurant name.
+     */
    private void initializeCategories() {
       File indexFile = new File(filePath);
       StringBuilder names = new StringBuilder();
@@ -81,6 +87,9 @@ public class Inventory {
          System.out.println("!!File was not Found!!");
       }
    }
+  
+   
+   
    
    /**
     * Updates the inventory file with the current state of categories and their data.
@@ -107,6 +116,9 @@ public class Inventory {
       }
    }
    
+  
+  
+  
    /**
     * Prints the inventory list to the console.
     * Includes the restaurant name and all categories with their details.
