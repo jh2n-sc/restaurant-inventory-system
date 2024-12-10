@@ -1,42 +1,101 @@
-import java.io.*;
-import java.util.*;
+/*
+ * The Category class represents a category in a restaurant's inventory system.
+ * It stores the category name, a list of items within the category, 
+ * and provides methods to initialize and print the category details.
+*/
 
-class Category {
-    File categoryFile;
+/*
+ * Important Class Members:
+ * category_name: Stores the name of the category.
+ * itemList: An ArrayList to store the items within the category.
+ * item_Number: Stores the number of items in the category.
+ * isEmpty: A boolean flag to indicate if the category has any items.
+ * directory: Stores the directory path to the category's items file.
+*/
 
-    // HashMap key is the name of the ingredient, and HashMap value is the amount of the ingredient
-    HashMap<String, Integer> ingredientList = new HashMap<>();
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-    // The constructor below initializes a file object based on the given category name
-    // (given through the contructor's parameter) which is stored in the String categoryName.
-    // The while loop reads the file line by line, expecting a "ingredientName,amount" format.
-    // The scanned ingredientName and its corresponding amount is stored in the ingredientList HashMap.     
-    String categoryName;
-    Category (String category){
-        categoryName = category + ".txt";
+public class Category {
+    public String category_name;
+    private ArrayList<Item> itemList = new ArrayList<>();
 
-        categoryFile = new File(categoryName);
+    private int item_Number;
+    private boolean isEmpty;
+    private String directory = "./content/";
 
-        try (Scanner scanner = new Scanner(categoryFile)){
-            while (scanner.hasNext()){
-                String[] tempArray = scanner.nextLine().split(",");
-                int amount = Integer.parseInt(tempArray[1]);
+    public Category(String name){
+        this.category_name = name;
+        this.item_Number = 0;
+        this.isEmpty = true;//this feels redundant but hmmmm
 
-                ingredientList.put(tempArray[0], amount);
+        if(name.indexOf(" ") != -1){
+            // break; put a string editor to replace " " with "_"
+        }
+
+        this.directory = this.directory + name + ".txt";
+        initializeItems(new File(this.directory));
+    }
+
+    private void initializeItems(File categoryItems){
+        try(Scanner scanItems = new Scanner(categoryItems);){
+            //temporary variables
+            Item current;
+            String store = "";
+            boolean isEmpty = true;
+            int number = 0;
+            //temporary variables
+
+            while(scanItems.hasNextLine()){
+                store = scanItems.nextLine();
+                    current = new Item(store);
+                
+                while(scanItems.hasNextInt()){
+                    store = scanItems.nextLine();
+                    current.addStock(store);
+                }    
+
+                itemList.add(current);
+
+                if(isEmpty){
+                    isEmpty = !isEmpty;
+                }
+                number++;
             }
 
-            scanner.close();
-        } catch (FileNotFoundException e){
-            System.out.println("File not found: " + e.getMessage());
+            this.isEmpty = isEmpty;
+            this.item_Number = number;
+
+        } catch(FileNotFoundException err){
+            err.printStackTrace();
+            System.out.println("Did not find Category for " + this.category_name);
+        }
+
+    }
+
+    public void printCategoryList(){
+        System.out.println("Category: " + category_name);
+        Item item;
+
+        if(isEmpty){
+            System.out.println("[Empty]");
+            return;
+        }
+
+        for(int i = 0; i < item_Number; i++){
+            item = itemList.get(i);
+            item.printItem();
         }
     }
 
-    // Method for printing the ingredient and its corresponding amount
-    public void printStock (){
-        for (Map.Entry<String, Integer> entry : ingredientList.entrySet()){
-            String ingredient = entry.getKey();
-            int amount = entry.getValue();
-            System.out.println(ingredient + ": " + amount);
-        }
+    public Item findItemByName(String itemName){
+        for (Item item : itemList){
+            if (item.getName().equals(itemName)){
+                return item;
+            }
+        } 
+        return null;
     }
 }
