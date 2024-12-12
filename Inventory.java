@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -13,12 +12,13 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public class Inventory {
 
     private String restaurantName;
     private ArrayList<Category> categories = new ArrayList<>();
-    private static String categoryNames;
+    public static String categoryNames;
     private static String filePath = "./content/index.txt";
     private boolean categoriesExist;
 
@@ -53,6 +53,12 @@ public class Inventory {
         }
 
         categoryNames = names;
+    }
+
+
+    public void addCategory(String name){
+        Category newcategory = new Category(name);
+        categories.add(newcategory);
     }
 
     public void updateFile(){
@@ -105,28 +111,40 @@ public class Inventory {
     }
 
     // FX
-    public void addStackLayers(BorderPane inventoryPane, BorderPane viewPane){
+    public void addStackLayers(BorderPane inventoryPane){
         Category current;
         GridPane grid = FX_Utility.createGrid();
         StackPane stack = new StackPane();
             stack.setStyle(FX_Utility.fx);
-        BorderPane innerPane; 
 
+        int columnIndex = categories.size();    
         for(int i = 0; i < categories.size(); i++){
+            BorderPane innerPane = new BorderPane();
             current = categories.get(i);
             Label label = FX_Utility.createTabLabel(current.category_name);
-                    grid.add(label, i, 0);
-            innerPane = new BorderPane();
+                    grid.add(label, columnIndex, 0);
             stack.getChildren().add(innerPane);
+            current.addTable(innerPane, inventoryPane);
+            columnIndex--;
+
+            addStackFunctions(stack, innerPane, label);
         }
         
 
 
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(stack);
-        inventoryPane.setRight(viewPane);
+        // inventoryPane.setRight(viewPane);
         // inventoryPane.getChildren().remove(viewPane);
 
+    }
+
+    private void addStackFunctions(StackPane stack, BorderPane innerPane, Label label){
+        label.setOnMouseClicked(event -> {
+            stack.getChildren().remove(innerPane);
+            stack.getChildren().add(innerPane);
+            System.out.println("clicked " + event.getClass());
+        });
     }
     // FX
 }

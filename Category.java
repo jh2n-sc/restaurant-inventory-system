@@ -6,6 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 
 public class Category {
@@ -15,18 +25,33 @@ public class Category {
     private int item_Number;
     private boolean isEmpty;
     private String directory = "./content/";
+    //Table fx
+    private TableView<Item> itemTable;
+    private boolean tablePrefWidth = false;
 
     public Category(String name){
         this.category_name = name;
         this.item_Number = 0;
         this.isEmpty = true;//this feels redundant but hmmmm
+        this.itemTable = new TableView<>();
+            FX_Utility.createTable(this.itemTable);
 
-        if(name.indexOf(" ") != -1){
-            // break; put a string editor to replace " " with "_"
-        }
+        editName(name);
 
         this.directory = this.directory + name + ".txt";
         initializeItems(new File(this.directory));
+    }
+
+    private void editName(String name){
+        if(name.indexOf(" ") != -1){
+            name.replace(' ', '_');
+        }
+    }
+
+    public void setCategoryName(String name){
+        editName(name);
+        this.category_name = name;
+        this.directory = this.directory + name + ".txt";
     }
 
     private void initializeItems(File categoryItems){
@@ -34,7 +59,7 @@ public class Category {
             //temporary variables
             Item current;
             String store = "";
-            boolean isEmpty = true;
+            boolean isEmpty = true; //note: this is redundant, pwedeng i-use nalang yung this.isEmpty
             int number = 0;
             //temporary variables
 
@@ -74,7 +99,7 @@ public class Category {
             Item current;
             for(int i = 0; i < itemList.size(); i++){
                 current = itemList.get(i);
-                categoryBuffer.write(current.getName());
+                categoryBuffer.write(current.getItem_Name());
                     categoryBuffer.newLine();
                 if(current.stockExists){
                     categoryBuffer.write(current.getItemStockSummary());
@@ -109,8 +134,58 @@ public class Category {
     //  CLI
 
     // FX
-    public void createItemTable(BorderPane innerPane){
+    public void addTable(BorderPane innerPane, BorderPane inventoryPane){
+        if(!this.tablePrefWidth){
+            this.itemTable.prefWidthProperty().bind(innerPane.widthProperty());
+            tablePrefWidth = true;
+        }
+        
+        ObservableList<Item> data = FXCollections.observableArrayList(itemList);
 
+        addRowFunction(innerPane, inventoryPane, this.itemTable);
+
+        this.itemTable.setItems(data);
+        innerPane.setCenter(this.itemTable);
+    }
+
+    private void addRowFunction(BorderPane innerPane, BorderPane inventoryPane, TableView<Item> itemTable){
+        BorderPane viewPane = new BorderPane();
+            viewPane.setPadding(new Insets(10, 3, 3, 3));
+            viewPane.setStyle("-fx-background-color: rgba(67, 20, 7, 0.3); -fx-background-radius: 20px; -fx-border-radius: 20px 20px 0px 0px;");
+
+            viewPane.prefWidthProperty().bind(inventoryPane.widthProperty().multiply(0.3));
+
+        BorderPane headerPane = new BorderPane();
+            headerPane.prefHeightProperty().bind(viewPane.heightProperty().multiply(0.3));
+            viewPane.setTop(headerPane);
+
+        Image icon = new Image(getClass().getResourceAsStream("./png/close.png"));
+            ImageView exitIcon = new ImageView(icon);
+            FX_Utility.addToTilePane(exitIcon, headerPane);
+
+        itemTable.setRowFactory(table -> {
+            TableRow<Item> selectedItem = new TableRow<>();
+                selectedItem.setOnMouseClicked(clicked -> {
+                    if(!selectedItem.isEmpty()){
+                        Item selected = selectedItem.getItem();
+                            System.out.println("Selected :" + selected.getItem_Name());
+                        selected.addStockTable(viewPane, headerPane);
+
+                        inventoryPane.setRight(viewPane);
+                    }
+                    System.out.println("selected " + clicked.getTarget());
+                });
+            
+            System.out.println("clicked " + table.getComparator());
+            return selectedItem;
+        });
+
+        exitIcon.setOnMouseClicked(clickExit -> {
+            if(inventoryPane.getChildren().contains(viewPane)){
+                inventoryPane.getChildren().remove(viewPane);
+                System.out.println("Clicked " + clickExit.getTarget());
+            }
+        });
     }
     // FX
 

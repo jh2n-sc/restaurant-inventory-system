@@ -1,24 +1,51 @@
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+
 public class Item {
     //main
-    private String item_Name;
-    private Queue<Stock> stocks = new LinkedList<>();
-    private double totalStock;
+    public String item_Name;
+    // public Queue<Stock> stocks = new LinkedList<>();
+    public LinkedList<Stock> stocks = new LinkedList<>();
+    public double totalStock;
+    public String unit;
     //main
 
     //flag
     public boolean stockExists; //to verify if an item has stock or not
     //flag
 
+    //remember //for sorting purposes
+    public Stock latestStock;
+    public String latestStockDate;
+    //
+
+    //table fx
+    private TableView<Stock> stockTable;
+    private boolean tablePrefWidth = false;
 
     public Item(String name){
         this.item_Name = name;
         this.stockExists = false;
         this.totalStock = 0;
+        this.stockTable = FX_Utility.createTable();
     }
 
     public void addStock(String stock){
@@ -26,16 +53,20 @@ public class Item {
 
         double size = scanString.nextDouble();
         String unit = scanString.next();
+
         String date;
 
         Stock newstock = new Stock(this.item_Name, size, unit);
         
         date = scanString.next();
             newstock.setDateArrived(date);
+            setLatestStock(newstock, date);
+
         date = scanString.next();
             newstock.setExpiryDate(date);
 
         stocks.add(newstock); //enqueue
+        
 
         if(!this.stockExists){
             this.stockExists = !this.stockExists;
@@ -44,10 +75,49 @@ public class Item {
         this.totalStock = this.totalStock + size;
 
         scanString.close();
+
+        sortList();
     }
 
-    public String getName(){
+    private void sortList(){
+        if(stocks.size() <= 1){
+            return;
+        }
+
+        Collections.sort(stocks, Comparator.comparing(Stock::getExpiry));
+    }
+
+    private void setLatestStock(Stock latest, String date){
+        this.latestStock = latest;
+        this.latestStockDate = date;
+    }
+
+    public String getItem_Name(){//for tableview access
         return item_Name;
+    } 
+
+    public String getTotalStock(){//for tableview access
+
+        String unit = this.latestStock.unit;
+
+        int total = (int) this.totalStock;
+        if(total == this.totalStock){
+            return total + " " + unit;
+        }
+
+        return this.totalStock + " " + unit;
+    }
+
+    public Stock getLatestStock(){
+        return this.latestStock;
+    }
+
+    // public Queue<Stock> getStocks(){
+    //     return stocks;
+    // }
+
+    public String getLatestStockDate(){//for tableview access
+        return this.latestStockDate;
     }
 
     public Stock getFront(){
@@ -87,11 +157,53 @@ public class Item {
             stockitem = traverse.next();
             stockitem.printStock();
         }
-
     }
     //CLI section
 
     //FX section
+    public void addStockTable(BorderPane viewPane, BorderPane headerPane){
+        if(!this.tablePrefWidth){
+            this.stockTable.prefWidthProperty().bind(viewPane.widthProperty());
+            tablePrefWidth = true;
+        }
+
+        
+        ObservableList<Stock> stocklist = FXCollections.observableArrayList(this.stocks);
+
+        this.stockTable.setItems(stocklist);
+        
+
+        addHeader(headerPane);
+        viewPane.setCenter(stockTable);
+    }
+
+    private void addHeader(BorderPane viewPane){
+        VBox box = new VBox();
+            box.setSpacing(4);
+        int totalInt = (int) this.totalStock;
+        String totalString = "";
+        if(totalInt == this.totalStock){
+            totalString = totalInt + " " + this.latestStock.unit;
+        } else {
+            totalString = this.totalStock + " " + this.latestStock.unit;
+        }
+
+        Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);
+            name.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+            name.setStyle(null);
+            name.setTextAlignment(TextAlignment.LEFT);
+            name.setMaxWidth(Double.MAX_VALUE);
+        Label total = FX_Utility.createTabLabel("Total: " + totalString);
+            total.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+            total.setStyle(null);
+            total.setTextAlignment(TextAlignment.LEFT);
+            total.setMaxWidth(Double.MAX_VALUE);
+
+        box.getChildren().addAll(name, total);
+
+        box.prefWidthProperty().bind(viewPane.widthProperty());
+        viewPane.setCenter(box);
+    }
     //FX section
 
 }

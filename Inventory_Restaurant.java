@@ -1,5 +1,3 @@
-
-
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -36,11 +34,11 @@ public class Inventory_Restaurant extends Application{
     }
 
     public void addLayers(StackPane mainStack){
-        inventory = new Inventory();
+        inventory = new Inventory(); //inventory instatiate;
 
         BorderPane pane = new BorderPane();
             pane.setPadding(new Insets(5, 5, 5, 5));
-            pane.setStyle(FX_Utility.fx);
+            pane.setStyle("-fx-border-color: black");
 
 
         addHeaderLayer(pane);
@@ -75,17 +73,10 @@ public class Inventory_Restaurant extends Application{
             inventoryPane.setStyle(FX_Utility.fx);
             inventoryPane.setPadding(new Insets(5, 5, 5, 5));
 
-        BorderPane viewPane = new BorderPane();
-            viewPane.setStyle("-fx-border-color: blue; -fx-border-width: 1px; -fx-border-style: solid;");
-            viewPane.setMaxWidth(400);
-            viewPane.setPrefWidth(300);
-
-        inventory.addStackLayers(inventoryPane, viewPane);
+        inventory.addStackLayers(inventoryPane);
 
         pane.setCenter(inventoryPane);
     }
-
-
 
     public static void main(String[] args){
         launch(args);

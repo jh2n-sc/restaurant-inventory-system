@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 public class Stock {
 
     // main
-    private String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
-    private Date invoice; //Date of Arrival? //constant
+    public String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
+    private Date invoice; //Date of Arrival //constant
     private Date expiry; //Obvious //constant
     private double amount;
     private String stockSummary; //constant values in a string
@@ -89,6 +89,23 @@ public class Stock {
 
     public String getStockSummary(){ //returns string for storing during file updates
         return amount + " " + this.stockSummary;
+    }
+
+    public String getAmount(){
+        return this.amount + " " + unit;
+    }
+
+    public String getInvoice(){
+        return formatdate.format(this.invoice);
+    }
+
+    public String getExpiry(){
+        
+        // if(this.isExpired){
+        //     return formatdate.format(this.expiry) + " !!EXPIRED!!";
+        // }
+
+        return formatdate.format(this.expiry);
     }
 
     public void printStock(){
