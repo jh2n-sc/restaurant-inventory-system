@@ -1,86 +1,126 @@
-/*
- * The Item class represents an item in a restaurant's inventory system.
- * It stores the item name, a queue of stocks for that item, and provides 
- * methods to add stock and print item details.
-*/
-
-/*
- * Important Class Members:
- * item_Name: Stores the name of the item.
- * stocks: A Queue to store the stocks of the item.
- * totalStock: Stores the total quantity of stock.
- * stockExists: A boolean flag to indicate if the item has stock.
-*/
-
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
 public class Item {
-    //main
-    private String item_Name;
-    private Queue<Stock> stocks = new LinkedList<>();
-    private int totalStock;
-    //main
+    public String item_Name;
+    public LinkedList<Stock> stocks = new LinkedList<>();
+    public double totalStock;
+    public String unit;
+    public boolean stockExists;
+    public Stock latestStock;
+    public String latestStockDate;
 
-    //flag
-    public boolean stockExists; //to verify if an item has stock or not
-    //flag
-
-    public Item(String name){
+    public Item(String name) {
         this.item_Name = name;
         this.stockExists = false;
         this.totalStock = 0;
     }
 
-    public void addStock(String stock){
+    public void addStock(String stock) {
         Scanner scanString = new Scanner(stock);
-
-        int size = scanString.nextInt();
+    
+        double size = scanString.nextDouble();
         String unit = scanString.next();
+    
         String date;
-
+    
         Stock newstock = new Stock(this.item_Name, size, unit);
-        
+    
         date = scanString.next();
-            newstock.setDateArrived(date);
+        newstock.setDateArrived(date);
+        setLatestStock(newstock, date);
+    
         date = scanString.next();
-            newstock.setExpiryDate(date);
-
-        stocks.add(newstock); //enqueue
-
-        if(!this.stockExists){
+        newstock.setExpiryDate(date);
+    
+        stocks.add(newstock);
+    
+        if (!this.stockExists) {
             this.stockExists = !this.stockExists;
         }
-
+    
         this.totalStock = this.totalStock + size;
-
+    
         scanString.close();
+    
+        sortList();
+    }
+    
+
+    private void sortList() {
+        if (stocks.size() <= 1) {
+            return;
+        }
+
+        Collections.sort(stocks, Comparator.comparing(Stock::getExpiry));
     }
 
-    public String getName(){
+    private void setLatestStock(Stock latest, String date) {
+        this.latestStock = latest;
+        this.latestStockDate = date;
+    }
+
+    public String getItem_Name() {
         return item_Name;
     }
 
-    public Stock getFront(){
+    public String getTotalStock() {
+        String unit = this.latestStock.unit;
+        int total = (int) this.totalStock;
+        if (total == this.totalStock) {
+            return total + " " + unit;
+        }
+        return this.totalStock + " " + unit;
+    }
+
+    public Stock getLatestStock() {
+        return this.latestStock;
+    }
+
+    public String getLatestStockDate() {
+        return this.latestStockDate;
+    }
+
+    public Stock getFront() {
         return stocks.peek();
     }
 
-    //CLI section
-    public void printItem(){
-        System.out.println("item name: " + item_Name);
+    public int getQueueSize() {
+        return stocks.size();
+    }
 
-        Iterator<Stock> traverse = stocks.iterator();
-        Stock stockitem;
-        while(traverse.hasNext()){
-            stockitem = traverse.next();
-            stockitem.printStock();
+    public String getItemStockSummary() {
+        String summary = "";
+        Iterator<Stock> traverse = this.stocks.iterator();
+        Stock current;
+        while (traverse.hasNext()) {
+            current = traverse.next();
+            summary = summary + current.getStockSummary();
+            if (traverse.hasNext()) {
+                summary = summary + "\n";
+            }
+        }
+        return summary;
+    }
+
+    public double getTotalStockAmount (){
+        return totalStock;
+    }
+
+    public void removeStock (double amount){
+        if (totalStock >= amount){
+            totalStock -= amount;
         }
     }
 
-    //CLI section
-
-    //FX section
-    //FX section
+    public void printItemStock() {
+        Iterator<Stock> stockIterator = stocks.iterator();
+        if (stockIterator.hasNext()){
+            Stock stock = stockIterator.next();
+            stock.viewStock();
+        }
+    }
 }

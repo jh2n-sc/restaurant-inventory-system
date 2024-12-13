@@ -3,3 +3,4 @@ SeaFood
 Vegetables
 Meat
 Fruits
+Drinks
