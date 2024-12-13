@@ -17,6 +17,7 @@ public class Inventory {
     public static String categoryNames;
     private static String filePath = "./content/index.txt";
     private boolean categoriesExist;
+    private Label prevClickedCategory;
 
     public Inventory(){
         this.categoriesExist =  false;
@@ -124,6 +125,10 @@ public class Inventory {
             columnIndex--;
 
             addStackFunctions(stack, innerPane, label);
+
+            if(i == categories.size() - 1){
+                label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
+            }
         }
         
 
@@ -134,10 +139,17 @@ public class Inventory {
 
     private void addStackFunctions(StackPane stack, BorderPane innerPane, Label label){
         label.setOnMouseClicked(event -> {
+            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
+            this.prevClickedCategory.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(127, 90, 77); -fx-background-radius: 10px 10px 0 0;");
+
             stack.getChildren().remove(innerPane);
             stack.getChildren().add(innerPane);
             System.out.println("clicked " + event.getClass());
+
+            this.prevClickedCategory = label;
         });
+
+        this.prevClickedCategory = label;
     }
     // FX
 }

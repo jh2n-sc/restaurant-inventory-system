@@ -50,7 +50,7 @@ public class FX_Utility {
             label.setMaxWidth(200);
             label.setPadding(new Insets(2, 10, 2, 10));
 
-            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
+            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(127, 90, 77); -fx-background-radius: 10px 10px 0 0;");
         return label;
     }
 
