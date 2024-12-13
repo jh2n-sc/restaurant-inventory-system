@@ -35,6 +35,10 @@ public class Stock {
         this.stockSummary = unit;
     }
 
+    public void setAmount(double amount){
+        this.amount = this.amount + amount;
+    }
+
     public void setDateArrived(String date){
         try{
             this.invoice = formatdate.parse(date);

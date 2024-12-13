@@ -4,18 +4,17 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 
 public class Category {
@@ -82,12 +81,24 @@ public class Category {
 
             this.isEmpty = isEmpty;
             this.item_Number = number;
+            sortList();
 
         } catch(FileNotFoundException err){
             err.printStackTrace();
             System.out.println("Did not find Category for " + this.category_name);
         }
+    }
 
+    public void addItem(String name){
+        Item newItem = new Item(name);
+            this.itemList.add(newItem);
+            sortList();
+    }
+
+    private void sortList(){
+        if(this.itemList.size() > 1){
+            Collections.sort(this.itemList, Comparator.comparing(Item::getItem_Name));
+        }
     }
 
     public void updateFile(){
@@ -114,6 +125,12 @@ public class Category {
             System.out.println("Flag value: " + flagValue);
             err.printStackTrace();
         }
+    }
+
+    public void updateTable(){
+        this.itemTable.getItems().clear();
+        ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
+        this.itemTable.setItems(data);
     }
 
     // CLI
@@ -151,8 +168,7 @@ public class Category {
     private void addRowFunction(BorderPane innerPane, BorderPane inventoryPane, TableView<Item> itemTable){
         BorderPane viewPane = new BorderPane();
             viewPane.setPadding(new Insets(10, 3, 3, 3));
-            viewPane.setStyle("-fx-background-color: rgba(67, 20, 7, 0.3); -fx-background-radius: 20px; -fx-border-radius: 20px 20px 0px 0px;");
-
+            viewPane.setStyle("-fx-background-color: rgba(67, 20, 7, 0.3); -fx-background-radius: 20px 20px 0 0; -fx-border-radius: 20px 20px 0px 0px;");
             viewPane.prefWidthProperty().bind(inventoryPane.widthProperty().multiply(0.3));
 
         BorderPane headerPane = new BorderPane();

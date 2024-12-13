@@ -5,14 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 public class Inventory {
 
@@ -131,11 +127,8 @@ public class Inventory {
         }
         
 
-
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(stack);
-        // inventoryPane.setRight(viewPane);
-        // inventoryPane.getChildren().remove(viewPane);
 
     }
 

@@ -1,19 +1,15 @@
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ListIterator;
 import java.util.Scanner;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -53,38 +49,51 @@ public class Item {
 
         double size = scanString.nextDouble();
         String unit = scanString.next();
+        String dateArrival = scanString.next();
+        String dateExpiry = scanString.next();
 
-        String date;
+        Stock current = checkIfStockExists(dateArrival, dateExpiry);
 
-        Stock newstock = new Stock(this.item_Name, size, unit);
-        
-        date = scanString.next();
-            newstock.setDateArrived(date);
-            setLatestStock(newstock, date);
+        if(current != null){
+            current.setAmount(size);
+        } else {
+            Stock newstock = new Stock(this.item_Name, size, unit);
+                newstock.setDateArrived(dateArrival);
+                newstock.setExpiryDate(dateExpiry);
+            this.stocks.add(newstock); //add to the list
 
-        date = scanString.next();
-            newstock.setExpiryDate(date);
-
-        stocks.add(newstock); //enqueue
-        
+            sortList();
+        }
 
         if(!this.stockExists){
             this.stockExists = !this.stockExists;
         }
 
-        this.totalStock = this.totalStock + size;
-
+        
         scanString.close();
+        this.totalStock = this.totalStock + size;
+    }
 
-        sortList();
+    private Stock checkIfStockExists(String dateArrival, String dateExpiry){
+
+        ListIterator<Stock> iterateStock = stocks.listIterator();
+        Stock current;
+        while(iterateStock.hasNext()){
+            current = iterateStock.next();
+            if(dateArrival.equals(current.getInvoice())){
+                if(dateExpiry.equals(current.getExpiry())){
+                    return current;
+                }
+            }
+        }
+        return null;
     }
 
     private void sortList(){
-        if(stocks.size() <= 1){
-            return;
+        if(this.stocks.size() > 1){
+            Collections.sort(this.stocks, Comparator.comparing(Stock::getExpiry));
         }
-
-        Collections.sort(stocks, Comparator.comparing(Stock::getExpiry));
+        setLatestStock(this.stocks.getLast(), this.stocks.getLast().getInvoice());
     }
 
     private void setLatestStock(Stock latest, String date){
@@ -144,6 +153,12 @@ public class Item {
         }
 
         return summary;
+    }
+
+    public void updateTable(){
+        this.stockTable.getItems().clear(); //maybe this is not needed
+        ObservableList<Stock> data = FXCollections.observableArrayList(this.stocks);
+        this.stockTable.setItems(data);
     }
 
     //CLI section
