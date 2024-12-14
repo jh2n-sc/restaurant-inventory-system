@@ -3,9 +3,11 @@ import java.util.Date;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +24,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Window;
 
 
 public class FX_Utility {
@@ -133,6 +136,26 @@ public class FX_Utility {
         stockTable.getColumns().add(invoiceColumn);
         stockTable.getColumns().add(expiryColumn);
 
+
+        stockTable.setRowFactory(stocktab -> new TableRow<>() {
+            @Override
+            protected void updateItem(Stock current, boolean empty){
+                super.updateItem(current, empty);
+                if(current == null || empty){
+                    setStyle("");
+                } else {
+                    String str = current.isExpired();
+                    if(str == null){
+                        setStyle("");
+                    } else if(str.equals("expired")){
+                        setStyle("-fx-background-color: rgba(196, 28, 26, 0.7)");
+                    } else if(str.equals("warn")){
+                        setStyle("-fx-background-color: rgba(190, 104, 19, 0.7);");
+                    }
+                } 
+            }
+        });
+
         stockTable.setFixedCellSize(35);
 
         return stockTable;
@@ -172,6 +195,15 @@ public class FX_Utility {
         box.getChildren().addAll(title, field, btn);
 
         return box;
+    }
+
+    public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message){
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner);
+        alert.show();
     }
 
 

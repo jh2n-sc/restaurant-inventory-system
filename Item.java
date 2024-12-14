@@ -121,9 +121,6 @@ public class Item {
         return this.latestStock;
     }
 
-    // public Queue<Stock> getStocks(){
-    //     return stocks;
-    // }
 
     public String getLatestStockDate(){//for tableview access
         return this.latestStockDate;
