@@ -7,7 +7,7 @@ public class Stock {
 
     // main
     public String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
-    private Date invoice; //Date of Arrival //constant
+    public Date invoice; //Date of Arrival //constant
     private Date expiry; //Obvious //constant
     private double amount;
     private String stockSummary; //constant values in a string
@@ -115,8 +115,12 @@ public class Stock {
         return totalString;
     }
 
-    public String getInvoice(){
+    public String getInvoiceString(){
         return formatdate.format(this.invoice);
+    }
+
+    public Date getInvoice(){
+        return this.invoice;
     }
 
     public String getExpiry(){

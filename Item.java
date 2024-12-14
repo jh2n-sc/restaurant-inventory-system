@@ -1,5 +1,6 @@
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -30,7 +31,8 @@ public class Item {
 
     //remember //for sorting purposes
     public Stock latestStock;
-    public String latestStockDate;
+    public Date latestStockDate;
+    public String latestStockString;
     //
 
     //table fx
@@ -44,6 +46,11 @@ public class Item {
         this.stockTable = FX_Utility.createTable();
         this.unit = "unit";
         this.latestStock = new Stock(name, 0, unit);
+        initialLatestStock();
+    }
+
+    private void initialLatestStock(){
+        this.latestStockString = "Not Yet Restocked";
     }
 
     public void addStock(String stock){
@@ -86,7 +93,7 @@ public class Item {
         Stock current;
         while(iterateStock.hasNext()){
             current = iterateStock.next();
-            if(dateArrival.equals(current.getInvoice())){
+            if(dateArrival.equals(current.getInvoiceString())){
                 if(dateExpiry.equals(current.getExpiry())){
                     return current;
                 }
@@ -99,12 +106,13 @@ public class Item {
         if(this.stocks.size() > 1){
             Collections.sort(this.stocks, Comparator.comparing(Stock::getExpiry));
         }
-        setLatestStock(this.stocks.getLast(), this.stocks.getLast().getInvoice());
+        setLatestStock(this.stocks.getLast());
     }
 
-    private void setLatestStock(Stock latest, String date){
+    private void setLatestStock(Stock latest){
         this.latestStock = latest;
-        this.latestStockDate = date;
+        this.latestStockDate = latest.invoice;
+        this.latestStockString = latest.getInvoiceString();
     }
 
     public String getItem_Name(){//for tableview access
@@ -141,20 +149,16 @@ public class Item {
         return this.latestStock;
     }
 
-
-    public String getLatestStockDate(){//for tableview access
-        if(!this.stockExists){
-            return "Not Yet Restocked";
-        }
+    public Date getLatestStockDate(){//for tableview access
         return this.latestStockDate;
+    }
+
+    public String getLatestStockString(){
+        return this.latestStockString;
     }
 
     public Stock getFront(){
         return stocks.peek();
-    }
-
-    public int getQueueSize(){
-        return stocks.size();
     }
 
     public String getItemStockSummary(){ //summarizes all the stock into one string

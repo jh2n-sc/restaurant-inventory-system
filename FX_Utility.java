@@ -112,11 +112,28 @@ public class FX_Utility {
                 }
             });
 
-        TableColumn<Item, String> restockDateColumn = new TableColumn<>("Date Restocked");
+        TableColumn<Item, Date> restockDateColumn = new TableColumn<>("Date Restocked");
             restockDateColumn.prefWidthProperty().bind(itemTable.widthProperty().multiply(0.4));
             restockDateColumn.setCellValueFactory(new PropertyValueFactory<>("latestStockDate"));
             restockDateColumn.setResizable(false);
             restockDateColumn.setStyle(alignFX);
+            restockDateColumn.setCellFactory(column -> new TableCell<>(){
+                @Override
+                protected void updateItem(Date latestStockDate, boolean empty){
+                    super.updateItem(latestStockDate, empty);
+                    if(empty || latestStockDate == null){
+                        setText(null);
+                    } else {
+                        Item current = getTableRow().getItem();
+                        if(current != null){
+                            setText(String.format("%s", current.getLatestStockString()));
+                        } else {
+                            setText(null);
+                        }
+                        
+                    }
+                }
+            });
 
         itemTable.getColumns().add(itemNameColumn);
         itemTable.getColumns().add(stockAmountColumn);
