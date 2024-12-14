@@ -37,7 +37,7 @@ public class Inventory {
     private BorderPane transactionPane = new BorderPane();
     private StackPane stack;
     private GridPane grid;
-    private BorderPane storeInventoryPane;
+    // private BorderPane storeInventoryPane;
 
     public Inventory(){
         this.categoriesExist =  false;
@@ -79,7 +79,7 @@ public class Inventory {
         Category newcategory = new Category(name);
         categories.add(newcategory);
         categoryNames = categoryNames + ";" + name;
-        addGridTab(this.grid, this.storeInventoryPane);
+        addGridTab(this.grid, (BorderPane) this.grid.getParent());
         updateFile();
     }
 
@@ -162,7 +162,7 @@ public class Inventory {
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(this.stack);
 
-        this.storeInventoryPane = inventoryPane; //only use for updates
+        // this.storeInventoryPane = inventoryPane; //only use for updates
     }
 
     private void addCategoryTab(int columnIndex, GridPane grid){
