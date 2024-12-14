@@ -120,6 +120,19 @@ public class Item {
         return this.totalStock;
     }
 
+    public String getTotal(){
+        int totalInt = (int) this.totalStock;
+        String totalString = "";
+        if(totalInt == this.totalStock){
+            totalString = totalInt + "";
+            
+        } else {
+            totalString = this.totalStock + "";
+        }
+
+        return totalString;
+    }
+
     public Double getAmount(){
         return this.totalStock;
     }
@@ -204,9 +217,10 @@ public class Item {
         int totalInt = (int) this.totalStock;
         String totalString = "";
         if(totalInt == this.totalStock){
-            totalString = totalInt + " " + this.stocks.getLast().unit;
+            totalString = totalInt + " " + this.unit;
+            
         } else {
-            totalString = this.totalStock + " " + this.latestStock.unit;
+            totalString = this.totalStock + " " + this.unit;
         }
 
         Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);

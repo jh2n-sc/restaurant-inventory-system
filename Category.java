@@ -136,8 +136,6 @@ public class Category {
         updateFile();
     }
 
-
-
     private void sortList(){
         if(this.itemList.size() > 1){
             Collections.sort(this.itemList, Comparator.comparing(Item::getItem_Name));

@@ -104,14 +104,13 @@ public class FX_Utility {
                     } else {
                         Item item = getTableRow().getItem();
                         if(item != null){
-                            setText(String.format("%.2f %s", totalStock, item.getUnit()));
+                            setText(String.format("%s %s", item.getTotal(), item.getUnit()));
                         } else {
                             setText("None");
                         }
                     }
                 }
             });
-            // stockAmountColumn.setComparator(Comparator.comparing());
 
         TableColumn<Item, String> restockDateColumn = new TableColumn<>("Date Restocked");
             restockDateColumn.prefWidthProperty().bind(itemTable.widthProperty().multiply(0.4));
@@ -137,6 +136,22 @@ public class FX_Utility {
             amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
             amountColumn.setStyle(alignFX);
             amountColumn.setSortable(false);
+            amountColumn.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double totalStock, boolean empty){
+                    super.updateItem(totalStock, empty);
+                    if(empty || totalStock == null){
+                        setText(null);
+                    } else {
+                        Stock stock = getTableRow().getItem();
+                        if(stock != null){
+                            setText(String.format("%s %s", stock.getTotal(), stock.unit));
+                        } else {
+                            setText("None");
+                        }
+                    }
+                }
+            });
 
         TableColumn<Stock, Date> invoiceColumn = new TableColumn<>("Arrival Date");
            invoiceColumn.prefWidthProperty().bind(stockTable.widthProperty().multiply(0.4));

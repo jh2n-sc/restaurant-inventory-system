@@ -98,8 +98,21 @@ public class Stock {
         return amount + " " + this.stockSummary;
     }
 
-    public String getAmount(){
-        return this.amount + " " + unit;
+    public Double getAmount(){
+        return this.amount;
+    }
+
+    public String getTotal(){
+        int totalInt = (int) this.amount;
+        String totalString = "";
+        if(totalInt == this.amount){
+            totalString = totalInt + "";
+            
+        } else {
+            totalString = this.amount + "";
+        }
+
+        return totalString;
     }
 
     public String getInvoice(){
