@@ -1,6 +1,7 @@
 package src.utils;
 
 //Note: access' the Item class; must have access to Item Class
+
 import java.util.Date;
 
 import javafx.geometry.Insets;
@@ -20,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+
 import src.item.Item;
 import src.item.Stock;
 
@@ -134,6 +136,12 @@ public class FX_Utility {
         stockTable.setFixedCellSize(35);
         
         return stockTable;
+    }
+    
+    
+    public static void changeColorOnClick(Label label, Label prevLabel){
+        label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
+        prevLabel.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(127, 90, 77); -fx-background-radius: 10px 10px 0 0;");
     }
     
     

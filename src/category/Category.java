@@ -43,7 +43,7 @@ public class Category {
       this.itemTable = new TableView<>();
       FX_Utility.createTable(this.itemTable);
       
-      editName(name);
+      name = editName(name);
       
       System.out.println(name);
       this.directory = this.directory + name + ".txt";
@@ -51,10 +51,12 @@ public class Category {
       initializeItems(new File(this.directory));
    }
    
-   private void editName(String name){
-      if(name.indexOf(" ") != -1){
-         name.replace(' ', '_');
+   private String editName(String name){
+      if(name.contains(" ")){
+         name = name.replace(" ", "_");
+         System.out.println("(if)name of category: " + name);
       }
+      return name;
    }
    
    public void setCategoryName(String name){
