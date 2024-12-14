@@ -31,7 +31,9 @@ public class Stock {
         this.unit = unit;
         this.isExpired = false;
         this.warnExpiry =false;
+
         presentDate = new Date();
+        
         this.stockSummary = unit;
     }
 
