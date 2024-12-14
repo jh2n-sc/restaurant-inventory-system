@@ -1,4 +1,5 @@
 //Note: access' the Item class; must have access to Item Class
+import java.util.Comparator;
 import java.util.Date;
 
 import javafx.geometry.Insets;
@@ -6,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -14,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -92,6 +95,23 @@ public class FX_Utility {
             stockAmountColumn.setCellValueFactory(new PropertyValueFactory<>("totalStock"));
             stockAmountColumn.setResizable(false);
             stockAmountColumn.setStyle(alignFX);
+            stockAmountColumn.setCellFactory(column -> new TableCell<>() {
+                @Override
+                protected void updateItem(Double totalStock, boolean empty){
+                    super.updateItem(totalStock, empty);
+                    if(empty || totalStock == null){
+                        setText(null);
+                    } else {
+                        Item item = getTableRow().getItem();
+                        if(item != null){
+                            setText(String.format("%.2f %s", totalStock, item.getUnit()));
+                        } else {
+                            setText("None");
+                        }
+                    }
+                }
+            });
+            // stockAmountColumn.setComparator(Comparator.comparing());
 
         TableColumn<Item, String> restockDateColumn = new TableColumn<>("Date Restocked");
             restockDateColumn.prefWidthProperty().bind(itemTable.widthProperty().multiply(0.4));
@@ -195,6 +215,20 @@ public class FX_Utility {
         box.getChildren().addAll(title, field, btn);
 
         return box;
+    }
+
+    public static void contentPaneField(BorderPane contentPane, TextField field, Button btn, String header){
+        Label title = new Label(header);
+
+        field.maxWidthProperty().bind(contentPane.widthProperty().multiply(0.5));  
+             
+        btn.prefWidthProperty().bind(contentPane.widthProperty().multiply(0.25));
+
+        VBox box = boxInputCreate(title, field, btn);
+        contentPane.setCenter(box);
+            BorderPane.setAlignment(box, Pos.BOTTOM_CENTER);
+
+        contentPane.setStyle("-fx-border-radius: 50px; -fx-border-color: white; -fx-border-radius: 1px;");
     }
 
     public static void showAlert(Alert.AlertType alertType, Window owner, String title, String message){

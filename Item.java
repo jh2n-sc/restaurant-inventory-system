@@ -42,6 +42,8 @@ public class Item {
         this.stockExists = false;
         this.totalStock = 0;
         this.stockTable = FX_Utility.createTable();
+        this.unit = "unit";
+        this.latestStock = new Stock(name, 0, unit);
     }
 
     public void addStock(String stock){
@@ -67,6 +69,10 @@ public class Item {
 
         if(!this.stockExists){
             this.stockExists = !this.stockExists;
+        }
+
+        if(this.unit.equals("unit")){
+            this.unit = unit;
         }
 
         
@@ -105,16 +111,17 @@ public class Item {
         return item_Name;
     } 
 
-    public String getTotalStock(){//for tableview access
+    public String getUnit(){
+        return this.unit;
+    }
 
-        String unit = this.latestStock.unit;
+    public Double getTotalStock(){//for tableview access
 
-        int total = (int) this.totalStock;
-        if(total == this.totalStock){
-            return total + " " + unit;
-        }
+        return this.totalStock;
+    }
 
-        return this.totalStock + " " + unit;
+    public Double getAmount(){
+        return this.totalStock;
     }
 
     public Stock getLatestStock(){
@@ -123,6 +130,9 @@ public class Item {
 
 
     public String getLatestStockDate(){//for tableview access
+        if(!this.stockExists){
+            return "Not Yet Restocked";
+        }
         return this.latestStockDate;
     }
 
@@ -183,7 +193,6 @@ public class Item {
         ObservableList<Stock> stocklist = FXCollections.observableArrayList(this.stocks);
 
         this.stockTable.setItems(stocklist);
-        
 
         addHeader(headerPane);
         viewPane.setCenter(stockTable);
@@ -195,7 +204,7 @@ public class Item {
         int totalInt = (int) this.totalStock;
         String totalString = "";
         if(totalInt == this.totalStock){
-            totalString = totalInt + " " + this.latestStock.unit;
+            totalString = totalInt + " " + this.stocks.getLast().unit;
         } else {
             totalString = this.totalStock + " " + this.latestStock.unit;
         }

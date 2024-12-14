@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public class Inventory_Restaurant extends Application{
     
-    Inventory inventory;
+    public Inventory inventory;
 
     @Override
     public void start(Stage inventoryStage){

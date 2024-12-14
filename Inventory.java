@@ -33,16 +33,15 @@ public class Inventory {
     private boolean categoriesExist;
 
     private Label prevClickedCategory;
-    private Label optionClicked;
-    private BorderPane transactionPane = new BorderPane();
-    private StackPane stack;
+    private static Label optionClicked;
+    private static BorderPane transactionPane = new BorderPane();
+    private static StackPane stack;
     private GridPane grid;
-    // private BorderPane storeInventoryPane;
 
     public Inventory(){
         this.categoriesExist =  false;
-        createPane(this.transactionPane);
-        this.stack = new StackPane();
+        createPane(transactionPane);
+        stack = new StackPane();
         initializeCategories();
     }
 
@@ -78,7 +77,7 @@ public class Inventory {
     public void addCategory(String name){
         Category newcategory = new Category(name);
         categories.add(newcategory);
-        categoryNames = categoryNames + ";" + name;
+        categoryNames = categoryNames + name.toLowerCase() + ";";
         addGridTab(this.grid, (BorderPane) this.grid.getParent());
         updateFile();
     }
@@ -144,10 +143,10 @@ public class Inventory {
             current = categories.get(i);
             Label label = FX_Utility.createTabLabel(current.category_name);
                     grid.add(label, i, 0);
-            this.stack.getChildren().add(innerPane);
+            stack.getChildren().add(innerPane);
             current.addTable(innerPane, inventoryPane);
 
-            addStackFunctions(this.stack, innerPane, label);
+            addStackFunctions(stack, innerPane, label);
 
             if(i == 0){
                 label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
@@ -160,34 +159,23 @@ public class Inventory {
         addGridTab(grid, inventoryPane);
 
         inventoryPane.setTop(grid);
-        inventoryPane.setCenter(this.stack);
-
-        // this.storeInventoryPane = inventoryPane; //only use for updates
+        inventoryPane.setCenter(stack);
     }
 
     private void addCategoryTab(int columnIndex, GridPane grid){
         Label label = FX_Utility.createTabLabel("+");
-            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(160, 13, 0); -fx-background-radius: 10px 10px 0 0;");
+            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(177, 62, 17); -fx-background-radius: 10px 10px 0 0;");
             grid.add(label, columnIndex, 0);
 
         BorderPane addCategoryPane = new BorderPane();
-            Label title = new Label("Add Category");
-            TextField field = new TextField();
-                field.maxWidthProperty().bind(addCategoryPane.widthProperty().multiply(0.5));  
+            TextField field = new TextField();  
             Button btn = new Button("Create Category");      
-                btn.prefWidthProperty().bind(addCategoryPane.widthProperty().multiply(0.25));
+
+            FX_Utility.contentPaneField(addCategoryPane, field, btn, "Add Category");
             
             setAddFunction(field, btn);
-
-        VBox box = FX_Utility.boxInputCreate(title, field, btn);
-            addCategoryPane.setCenter(box);
-                BorderPane.setAlignment(box, Pos.BOTTOM_CENTER);
                    
-            addCategoryPane.setStyle("-fx-border-radius: 50px; -fx-border-color: white; -fx-border-radius: 1px;");
             addCategoryPane.setId("category");
-
-        this.stack.getChildren().add(addCategoryPane);
-            
 
         addTransactionPaneFunctions(label, addCategoryPane);
     }
@@ -196,7 +184,7 @@ public class Inventory {
         btn.setOnMouseClicked(click -> {
 
             if(field.getText().isEmpty()){
-                FX_Utility.showAlert(Alert.AlertType.ERROR, this.stack.getScene().getWindow(), "ERROR", "Please provide an input");
+                FX_Utility.showAlert(Alert.AlertType.ERROR, stack.getScene().getWindow(), "ERROR", "Please provide an input");
                 return;
             }
             
@@ -204,12 +192,12 @@ public class Inventory {
             String textEdited = text.toLowerCase();
 
             if(categoryNames.contains(textEdited)){
-                FX_Utility.showAlert(Alert.AlertType.ERROR, this.stack.getScene().getWindow(), "ERROR", "Category name already exists");
+                FX_Utility.showAlert(Alert.AlertType.ERROR, stack.getScene().getWindow(), "ERROR", "Category name already exists");
                 return;
             }
 
             addCategory(text);
-            FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, this.stack.getScene().getWindow(), "Success!!", "Category " + text + " has been created.");
+            FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, stack.getScene().getWindow(), "Success!!", "Category " + text + " has been created.");
 
             System.out.println("btn: " + click.getTarget());
         });
@@ -219,10 +207,10 @@ public class Inventory {
         label.setOnMouseClicked(event -> {
 
             if(this.prevClickedCategory == label){
-                if(this.optionClicked == null){
+                if(optionClicked == null){
                     return;
                 } else {
-                    this.optionClicked = null;
+                    optionClicked = null;
                 }
             } else {
                 FX_Utility.changeColorOnClick(label, this.prevClickedCategory);
@@ -231,28 +219,28 @@ public class Inventory {
 
             stack.getChildren().remove(innerPane);
             stack.getChildren().add(innerPane);
-            this.transactionPane.setCenter(null);
+            transactionPane.getChildren().clear();
             System.out.println("clicked " + event.getClass());
 
             this.prevClickedCategory = label;
-            if(this.optionClicked != null){
-                this.optionClicked = null;
+            if(optionClicked != null){
+                optionClicked = null;
             }
         });
 
         this.prevClickedCategory = label;
     }
 
-    private void addTransactionPaneFunctions(Label label, BorderPane contentPane){
+    public static void addTransactionPaneFunctions(Label label, BorderPane contentPane){
         label.setOnMouseClicked(clicked -> {
-            if(label == this.optionClicked){
+            if(label == optionClicked){
                     return;
             }
 
-            this.optionClicked = label;
-            this.transactionPane.setCenter(contentPane);
-            this.stack.getChildren().remove(this.transactionPane);
-            this.stack.getChildren().add(this.transactionPane);
+            optionClicked = label;
+            transactionPane.setCenter(contentPane);
+            stack.getChildren().remove(transactionPane);
+            stack.getChildren().add(transactionPane);
 
             System.out.println("Transaction: " + clicked.getTarget());
         });
