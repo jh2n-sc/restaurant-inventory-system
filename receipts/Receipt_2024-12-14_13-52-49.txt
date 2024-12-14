@@ -1,0 +1,5 @@
+Withdrawn: 0.0 kg of Chicken
+Withdrawn: 105.0 kg of Chicken
+Deposited: 0.0 kg of Chicken
+Deposited: 0.0 kg of Chicken
+Deposited: 0.0 kg of Chicken

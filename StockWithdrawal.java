@@ -7,60 +7,104 @@ public class StockWithdrawal {
     private HashMap<Stock, Double> deductedAmounts = new HashMap<>();
     private List<String> transactionLogs = new ArrayList<>();
     private TransactionLogger transactionLogger;
+    private Inventory inventory;
 
-    // Constructor: Initializes the transaction logger
-    public StockWithdrawal(TransactionLogger transactionLogger) {
+    // Constructor: Initializes the transaction logger and inventory
+    public StockWithdrawal(TransactionLogger transactionLogger, Inventory inventory) {
         this.transactionLogger = transactionLogger;
+        this.inventory = inventory;
     }
 
-    // Withdraws a stock and logs the transaction
-    public void withdrawStock(Stock stock) {
-        if (!withdrawnStocks.contains(stock)) {
-            withdrawnStocks.add(stock);
-            logTransaction("Withdrawn", stock, stock.getAmount());
-        } else {
-            System.out.println("Stock already withdrawn.");
+    // Withdraws an amount from the stocks and logs the transaction
+    public void withdrawStock(Item item, double amount) {
+        List<Stock> stocks = item.stocks;
+        double totalAvailableStock = stocks.stream().mapToDouble(Stock::getAmount).sum();
+
+        if (totalAvailableStock < amount) {
+            System.out.println("Not enough stock to withdraw the requested amount.");
+            return;
         }
-    }
 
-    // Deposits a stock and logs the transaction, removing it from the withdrawn list
-    public void depositStock(Stock stock) {
-        if (withdrawnStocks.contains(stock)) {
-            withdrawnStocks.remove(stock);
-            deductedAmounts.remove(stock);
-            logTransaction("Deposited", stock, stock.getAmount());
-        } else {
-            System.out.println("Stock has not been withdrawn.");
-        }
-    }
+        double remainingAmount = amount;
 
-    // Adds an amount to a stock and logs the transaction, ensuring it does not exceed the amount deducted
-    public void addAmount(Stock stock, double amount) {
-        if (withdrawnStocks.contains(stock)) {
-            double deductedAmount = deductedAmounts.getOrDefault(stock, 0.0);
-            if (amount <= deductedAmount) {
-                stock.deposit(amount);
-                deductedAmounts.put(stock, deductedAmount - amount);
-                logTransaction("Withdrawn/Added", stock, -amount);
-                System.out.println("Amount added.");
+        for (Stock stock : stocks) {
+            if (remainingAmount <= 0) break;
+            double stockAmount = stock.getAmount();
+            if (remainingAmount >= stockAmount) {
+                remainingAmount -= stockAmount;
+                stock.withdraw(stockAmount);
+                addToWithdrawnStocks(stock, stockAmount);
             } else {
-                System.out.println("Cannot add more than the amount deducted.");
+                stock.withdraw(remainingAmount);
+                addToWithdrawnStocks(stock, remainingAmount);
+                remainingAmount = 0;
             }
-        } else {
-            System.out.println("Cannot add to a stock that has not been withdrawn.");
+            logTransaction("Withdrawn", stock, stockAmount);
+        }
+
+        inventory.updateFile();
+    }
+
+    private void addToWithdrawnStocks(Stock stock, double amount) {
+        boolean found = false;
+        for (Stock withdrawnStock : withdrawnStocks) {
+            if (withdrawnStock.getItemName().equals(stock.getItemName()) && 
+                withdrawnStock.getExpiry().equals(stock.getExpiry())) {
+                withdrawnStock.deposit(amount);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            Stock newWithdrawnStock = new Stock(stock.getItemName(), amount, stock.unit);
+            newWithdrawnStock.setDateArrived(stock.getInvoice());
+            newWithdrawnStock.setExpiryDate(stock.getExpiry());
+            withdrawnStocks.add(newWithdrawnStock);
         }
     }
 
-    // Deducts an amount from a stock and logs the transaction
-    public void deductAmount(Stock stock, double amount) {
-        if (withdrawnStocks.contains(stock)) {
-            stock.withdraw(amount);
-            double deductedAmount = deductedAmounts.getOrDefault(stock, 0.0);
-            deductedAmounts.put(stock, deductedAmount + amount);
-            logTransaction("Withdrawn/Deducted", stock, amount);
-            System.out.println("Amount deducted.");
-        } else {
-            System.out.println("Cannot deduct from a stock that has not been withdrawn.");
+    // Deposits an amount back to the respective stocks and logs the transaction
+    public void depositStock(Item item, double amount) {
+        List<Stock> stocks = item.stocks;
+        double remainingAmount = amount;
+
+        for (Stock stock : stocks) {
+            if (remainingAmount <= 0) break;
+            for (Stock withdrawnStock : withdrawnStocks) {
+                if (withdrawnStock.getItemName().equals(stock.getItemName()) && 
+                    withdrawnStock.getExpiry().equals(stock.getExpiry())) {
+                    double depositAmount = Math.min(withdrawnStock.getAmount(), remainingAmount);
+                    stock.deposit(depositAmount);
+                    remainingAmount -= depositAmount;
+                    withdrawnStock.withdraw(depositAmount);
+                    logTransaction("Deposited", stock, depositAmount);
+                }
+            }
+        }
+
+        if (remainingAmount > 0) {
+            System.out.println("Not enough withdrawn stock to deposit the requested amount.");
+        }
+
+        inventory.updateFile();
+    }
+
+    // Removes stocks with zero amounts before the program ends
+    public void cleanUpStocks() {
+        for (Category category : inventory.getCategories()) {
+            for (Item item : category.getItemList()) {
+                List<Stock> stocks = item.stocks;
+                stocks.removeIf(stock -> stock.getAmount() == 0);
+            }
+        }
+        inventory.updateFile();
+    }
+
+    // Displays current stocks
+    public void displayStocks(Item item) {
+        System.out.println("Current Stocks for " + item.getItem_Name() + ":");
+        for (Stock stock : item.stocks) {
+            stock.printStock();
         }
     }
 
