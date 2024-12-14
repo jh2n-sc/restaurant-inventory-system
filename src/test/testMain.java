@@ -1,6 +1,6 @@
 package src.test;
 
-import src.Inventory;
+import src.inventory.Inventory;
 
 
 

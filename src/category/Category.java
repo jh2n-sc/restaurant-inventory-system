@@ -1,95 +1,89 @@
-/**
- * The Category class represents a category of items in a restaurant inventory system.
- */
 package src.category;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
-import src.item.Item;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 
+import src.item.Item;
+import src.utils.FX_Utility;
 
 public class Category {
-   
-   /**
-    * The name of the category.
-    */
    public String category_name;
-   
-   /**
-    * A list of items in the category.
-    */
    private final ArrayList<Item> itemList = new ArrayList<>();
    
-   /**
-    * The number of items in the category.
-    */
    private int item_Number;
-   
-   /**
-    * Indicates if the category is empty.
-    */
    private boolean isEmpty;
-   
-   /**
-    * The directory path for the category file.
-    */
-   private String directory = "./content/";
+   private String directory = "./resources/content/";
    
    
    
+   //Table fx
+   private final TableView<Item> itemTable;
+   private boolean tablePrefWidth = false;
    
-   
-   
-   /**
-    * Constructs a Category object with the specified name.
-    * Initializes the associated file for storing category data.
-    *
-    * @param name The name of the category.
-    */
-   public Category(String name) {
+   public Category(String name){
       this.category_name = name;
       this.item_Number = 0;
       this.isEmpty = true;
+      this.itemTable = new TableView<>();
+      FX_Utility.createTable(this.itemTable);
       
-      if (name.contains(" ")) {
-         name = name.replace(" ", "_");
-      }
+      editName(name);
       
+      System.out.println(name);
       this.directory = this.directory + name + ".txt";
+      System.out.println(directory);
       initializeItems(new File(this.directory));
    }
    
+   private void editName(String name){
+      if(name.indexOf(" ") != -1){
+         name.replace(' ', '_');
+      }
+   }
    
+   public void setCategoryName(String name){
+      editName(name);
+      this.category_name = name;
+      this.directory = this.directory + name + ".txt";
+   }
    
-   
-   
-   
-   /**
-    * Initializes items from a given file.
-    *
-    * @param categoryItems The file containing category item data.
-    */
-   private void initializeItems(File categoryItems) {
-      try (Scanner scanItems = new Scanner(categoryItems)) {
+   private void initializeItems(File categoryItems){
+      try(Scanner scanItems = new Scanner(categoryItems)){
+         //temporary variables
          Item current;
-         String store;
+         String store = "";
          boolean isEmpty = true;
          int number = 0;
+         //temporary variables
          
-         while (scanItems.hasNextLine()) {
+         while(scanItems.hasNextLine()){
             store = scanItems.nextLine();
             current = new Item(store);
             
-            while (scanItems.hasNextInt()) {
+            while(scanItems.hasNextDouble()){
                store = scanItems.nextLine();
                current.addStock(store);
             }
             
             itemList.add(current);
             
-            if (isEmpty) {
+            if(isEmpty){
                isEmpty = false;
             }
             number++;
@@ -97,27 +91,36 @@ public class Category {
          
          this.isEmpty = isEmpty;
          this.item_Number = number;
+         sortList();
          
-      } catch (FileNotFoundException err) {
+      } catch(FileNotFoundException err){
          err.printStackTrace();
-         System.out.println("Did not find Category file for " + this.category_name);
+         System.out.println("Did not find Category for " + this.category_name);
       }
    }
    
+   public void addItem(String name){
+      Item newItem = new Item(name);
+      this.itemList.add(newItem);
+      sortList();
+   }
    
+   private void sortList(){
+      if(this.itemList.size() > 1){
+         this.itemList.sort(Comparator.comparing(Item::getItem_Name));
+      }
+   }
    
-   
-   
-   /**
-    * Updates the category file to reflect the current state of items in the category.
-    */
-   public void updateFile() {
+   public void updateFile(){
       int flagValue = 0;
-      try (BufferedWriter categoryBuffer = new BufferedWriter(new FileWriter(this.directory, false))) {
+      try{
+         FileWriter categoryWrite = new FileWriter(this.directory, false);
+         BufferedWriter categoryBuffer = new BufferedWriter(categoryWrite);
+         
          Item current;
          for (Item item : itemList) {
             current = item;
-            categoryBuffer.write(current.getName());
+            categoryBuffer.write(current.getItem_Name());
             categoryBuffer.newLine();
             if (current.stockExists) {
                categoryBuffer.write(current.getItemStockSummary());
@@ -125,30 +128,92 @@ public class Category {
             }
             flagValue++;
          }
-      } catch (IOException err) {
+         
+         categoryBuffer.close();
+      } catch(IOException err){
          System.out.println("Error. Did not UPDATE category " + this.category_name);
          System.out.println("Flag value: " + flagValue);
          err.printStackTrace();
       }
    }
    
+   public void updateTable(){
+      this.itemTable.getItems().clear();
+      ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
+      this.itemTable.setItems(data);
+   }
    
-   
-   
-   
-   /**
-    * Prints the list of items in the category to the console.
-    * If the category is empty, "[Empty]" is displayed.
-    */
-   public void printCategoryList() {
+   // CLI
+   public void printCategoryList(){
       System.out.println("Category: " + category_name);
-      if (isEmpty) {
+      Item item;
+      
+      if(isEmpty){
          System.out.println("[Empty]");
          return;
       }
       
-      for (Item item : itemList) {
+      for(int i = 0; i < item_Number; i++){
+         item = itemList.get(i);
          item.printItem();
       }
    }
+   //  CLI
+   
+   // FX
+   public void addTable(BorderPane innerPane, BorderPane inventoryPane){
+      if(!this.tablePrefWidth){
+         this.itemTable.prefWidthProperty().bind(innerPane.widthProperty());
+         tablePrefWidth = true;
+      }
+      
+      ObservableList<Item> data = FXCollections.observableArrayList(itemList);
+      
+      addRowFunction(innerPane, inventoryPane, this.itemTable);
+      
+      this.itemTable.setItems(data);
+      innerPane.setCenter(this.itemTable);
+   }
+   
+   private void addRowFunction(BorderPane innerPane, BorderPane inventoryPane, TableView<Item> itemTable){
+      BorderPane viewPane = new BorderPane();
+      viewPane.setPadding(new Insets(10, 3, 3, 3));
+      viewPane.setStyle("-fx-background-color: rgba(67, 20, 7, 0.3); -fx-background-radius: 20px 20px 0 0; -fx-border-radius: 20px 20px 0px 0px;");
+      viewPane.prefWidthProperty().bind(inventoryPane.widthProperty().multiply(0.3));
+      
+      BorderPane headerPane = new BorderPane();
+      headerPane.prefHeightProperty().bind(viewPane.heightProperty().multiply(0.3));
+      viewPane.setTop(headerPane);
+      
+      Image icon = new Image(getClass().getResourceAsStream("/resources/png/close.png"));
+      ImageView exitIcon = new ImageView(icon);
+      FX_Utility.addToTilePane(exitIcon, headerPane);
+      
+      itemTable.setRowFactory(table -> {
+         TableRow<Item> selectedItem = new TableRow<>();
+         selectedItem.setOnMouseClicked(clicked -> {
+            if(!selectedItem.isEmpty()){
+               Item selected = selectedItem.getItem();
+               System.out.println("Selected :" + selected.getItem_Name());
+               selected.addStockTable(viewPane, headerPane);
+               
+               inventoryPane.setRight(viewPane);
+            }
+            System.out.println("selected " + clicked.getTarget());
+         });
+         
+         System.out.println("clicked " + table.getComparator());
+         return selectedItem;
+      });
+      
+      exitIcon.setOnMouseClicked(clickExit -> {
+         if(inventoryPane.getChildren().contains(viewPane)){
+            inventoryPane.getChildren().remove(viewPane);
+            System.out.println("Clicked " + clickExit.getTarget());
+         }
+      });
+   }
+   // FX
+   
+   
 }

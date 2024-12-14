@@ -5,170 +5,228 @@
 
 package src.item;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ListIterator;
 import java.util.Scanner;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
+import src.utils.FX_Utility;
 
 public class Item {
+   //main
+   public String item_Name;
+   // public Queue<Stock> stocks = new LinkedList<>();
+   public LinkedList<Stock> stocks = new LinkedList<>();
+   public double totalStock;
+   public String unit;
+   //main
    
-   /**
-    * The name of the item.
-    */
-   private final String item_Name;
+   //flag
+   public boolean stockExists; //to verify if an item has stock or not
+   //flag
    
-   /**
-    * A queue to store stock entries for the item.
-    */
-   private final Queue<Stock> stocks = new LinkedList<>();
+   //remember //for sorting purposes
+   public Stock latestStock;
+   public String latestStockDate;
+   //
    
-   /**
-    * The total stock quantity of the item.
-    */
-   private int totalStock;
+   //table fx
+   private final TableView<Stock> stockTable;
+   private boolean tablePrefWidth = false;
    
-   /**
-    * A flag indicating if the item has any stock.
-    */
-   public boolean stockExists;
-   
-   /**
-    * Iterator for accessing the stock entries in the queue.
-    */
-   private final Iterator<Stock> traverse = stocks.iterator();
-   
-   
-   
-   
-   
-   /**
-    * Constructs an Item with the specified name.
-    *
-    * @param name The name of the item.
-    */
-   public Item(String name) {
+   public Item(String name){
       this.item_Name = name;
       this.stockExists = false;
       this.totalStock = 0;
+      this.stockTable = FX_Utility.createTable();
    }
    
-   
-   
-   
-   /**
-    * Gets the name of the item.
-    *
-    * @return The name of the item.
-    */
-   public String getName() {
-      return item_Name;
-   }
-   
-   
-   
-   
-   
-   /**
-    * Retrieves the stock entry at the front of the stock queue.
-    *
-    * @return The stock at the front of the queue.
-    */
-   public Stock getFront() {
-      return stocks.peek();
-   }
-   
-   
-   
-   
-   
-   
-   /**
-    * Gets the number of stock entries for the item.
-    *
-    * @return The number of stock entries.
-    */
-   public int getQueueSize() {
-      return stocks.size();
-   }
-   
-   
-   
-   
-   
-   /**
-    * Adds a new stock entry to the item based on the provided string.
-    * The stock string should contain the quantity, unit, arrival date, and expiry date.
-    *
-    * @param stock A string representing the stock data in the format: size unit dateArrived expiryDate.
-    */
-   public void addStock(String stock) {
+   public void addStock(String stock){
       Scanner scanString = new Scanner(stock);
-      int size = scanString.nextInt();
+      
+      double size = scanString.nextDouble();
       String unit = scanString.next();
-      String date;
+      String dateArrival = scanString.next();
+      String dateExpiry = scanString.next();
       
-      Stock newStock = new Stock(this.item_Name, size, unit);
-      date = scanString.next();
-      newStock.setDateArrived(date);
-      date = scanString.next();
-      newStock.setExpiryDate(date);
+      Stock current = checkIfStockExists(dateArrival, dateExpiry);
       
-      stocks.add(newStock); //enqueue
+      if(current != null){
+         current.setAmount(size);
+      } else {
+         Stock newstock = new Stock(this.item_Name, size, unit);
+         newstock.setDateArrived(dateArrival);
+         newstock.setExpiryDate(dateExpiry);
+         this.stocks.add(newstock); //add to the list
+         
+         sortList();
+      }
       
-      if (!this.stockExists) {
+      if(!this.stockExists){
          this.stockExists = true;
       }
       
-      this.totalStock = this.totalStock + size;
+      
       scanString.close();
+      this.totalStock = this.totalStock + size;
    }
    
-   
-   
-   
-   
-   /**
-    * Summarizes all the stock details into a single string.
-    *
-    * @return A string containing the summary of all stock entries.
-    */
-   public String getItemStockSummary() {
-      StringBuilder summary = new StringBuilder();
+   private Stock checkIfStockExists(String dateArrival, String dateExpiry){
+      
+      ListIterator<Stock> iterateStock = stocks.listIterator();
       Stock current;
-      while (this.traverse.hasNext()) {
-         current = traverse.next();
-         summary.append(current.getStockSummary());
-         
-         if (this.traverse.hasNext()) {
-            summary.append("\n");
+      while(iterateStock.hasNext()){
+         current = iterateStock.next();
+         if(dateArrival.equals(current.getInvoice())){
+            if(dateExpiry.equals(current.getExpiry())){
+               return current;
+            }
          }
       }
-      return summary.toString();
+      return null;
    }
    
-   
-   
-   
-   
-   
-   /**
-    * Prints the details of the item and all its associated stock entries to the console.
-    */
-   public void printItem() {
-       System.out.println("item name: " + item_Name);
-       
-       for (Stock stockItem : stocks) {
-           stockItem.printStock();
-       }
-       
+   private void sortList(){
+      if(this.stocks.size() > 1){
+         this.stocks.sort(Comparator.comparing(Stock::getExpiry));
+      }
+      setLatestStock(this.stocks.getLast(), this.stocks.getLast().getInvoice());
    }
-
    
+   private void setLatestStock(Stock latest, String date){
+      this.latestStock = latest;
+      this.latestStockDate = date;
+   }
    
+   public String getItem_Name(){//for tableview access
+      return item_Name;
+   }
+   
+   public String getTotalStock(){//for tableview access
+      
+      String unit = this.latestStock.unit;
+      
+      int total = (int) this.totalStock;
+      if(total == this.totalStock){
+         return total + " " + unit;
+      }
+      
+      return this.totalStock + " " + unit;
+   }
+   
+   public Stock getLatestStock(){
+      return this.latestStock;
+   }
+   
+   // public Queue<Stock> getStocks(){
+   //     return stocks;
+   // }
+   
+   public String getLatestStockDate(){//for tableview access
+      return this.latestStockDate;
+   }
+   
+   public Stock getFront(){
+      return stocks.peek();
+   }
+   
+   public int getQueueSize(){
+      return stocks.size();
+   }
+   
+   public String getItemStockSummary(){ //summarizes all the stock into one string
+      String summary = "";
+      
+      Iterator<Stock> traverse = this.stocks.iterator();
+      
+      Stock current;
+      while(traverse.hasNext()){
+         current = traverse.next();
+         summary = summary + current.getStockSummary();
+         
+         if(traverse.hasNext()){
+            summary = summary + "\n";
+         }
+      }
+      
+      return summary;
+   }
+   
+   public void updateTable(){
+      this.stockTable.getItems().clear(); //maybe this is not needed
+      ObservableList<Stock> data = FXCollections.observableArrayList(this.stocks);
+      this.stockTable.setItems(data);
+   }
+   
+   //CLI section
+   public void printItem(){
+      System.out.println("item name: " + item_Name);
+      
+      Iterator<Stock> traverse = this.stocks.iterator();
+      
+      Stock stockItem;
+      while(traverse.hasNext()){
+         stockItem = traverse.next();
+         stockItem.printStock();
+      }
+   }
    //CLI section
    
    //FX section
+   public void addStockTable(BorderPane viewPane, BorderPane headerPane){
+      if(!this.tablePrefWidth){
+         this.stockTable.prefWidthProperty().bind(viewPane.widthProperty());
+         tablePrefWidth = true;
+      }
+      
+      
+      ObservableList<Stock> stockList = FXCollections.observableArrayList(this.stocks);
+      
+      this.stockTable.setItems(stockList);
+      
+      
+      addHeader(headerPane);
+      viewPane.setCenter(stockTable);
+   }
+   
+   private void addHeader(BorderPane viewPane){
+      VBox box = new VBox();
+      box.setSpacing(4);
+      int totalInt = (int) this.totalStock;
+      String totalString = "";
+      if(totalInt == this.totalStock){
+         totalString = totalInt + " " + this.latestStock.unit;
+      } else {
+         totalString = this.totalStock + " " + this.latestStock.unit;
+      }
+      
+      Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);
+      name.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+      name.setStyle(null);
+      name.setTextAlignment(TextAlignment.LEFT);
+      name.setMaxWidth(Double.MAX_VALUE);
+      Label total = FX_Utility.createTabLabel("Total: " + totalString);
+      total.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+      total.setStyle(null);
+      total.setTextAlignment(TextAlignment.LEFT);
+      total.setMaxWidth(Double.MAX_VALUE);
+      
+      box.getChildren().addAll(name, total);
+      
+      box.prefWidthProperty().bind(viewPane.widthProperty());
+      viewPane.setCenter(box);
+   }
    //FX section
    
 }

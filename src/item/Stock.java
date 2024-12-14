@@ -13,7 +13,6 @@
 package src.item;
 
 import src.utils.AnsiAdd;
-
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.text.ParseException;
@@ -21,156 +20,123 @@ import java.text.SimpleDateFormat;
 
 public class Stock {
     
-    /**
-     * Represents stock information for an item.
-     */
-    private final String unit; // Unit of measurement for the stock (e.g., Cases, Bags)
-    private Date invoice; // Date when the stock arrived
-    private Date expiry; // Expiry date of the stock
-    private final int amount; // Quantity of the stock
-    private String stockSummary; // A summary string of the stock's details
+    // main
+    public String unit; //Cases/Bags/Boxes/Crates/Pallets/Tubs/Bottles/Jars //constant
+    private Date invoice; //Date of Arrival //constant
+    private Date expiry; //Obvious //constant
+    private double amount;
+    private String stockSummary; //constant values in a string
+    // main
     
-    /**
-     * Flags indicating the stock status.
-     */
-    private boolean isExpired; // Indicates if the stock is expired
-    private boolean warnExpiry; // Indicates if the stock expires tomorrow
+    // sub
+    private boolean isExpired; //if the stock is already expired
+    private boolean warnExpiry; // if the stock expires the next day
+    // sub
     
-    /**
-     * Static date format used for parsing dates.
-     */
-    private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd"); // Date format for parsing
-    private static Date presentDate; // Current date used for comparison
+    //static
+    private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+    private static Date presentDate;
+    //static
     
-    /**
-     * The name of the item this stock represents.
-     */
     private final String itemName;
     
-    
-    
-    
-    /**
-     * Creates a new Stock object for a specific item.
-     *
-     * @param itemName the name of the item
-     * @param amount the quantity of the stock
-     * @param unit the unit of measurement for the stock
-     */
-    public Stock(String itemName, int amount, String unit) {
+    public Stock(String itemName, double amount, String unit){
         this.itemName = itemName;
         this.amount = amount;
         this.unit = unit;
         this.isExpired = false;
-        this.warnExpiry = false;
+        this.warnExpiry =false;
         presentDate = new Date();
         this.stockSummary = unit;
     }
     
+    public void setAmount(double amount){
+        this.amount = this.amount + amount;
+    }
     
-    
-    
-    /**
-     * Sets the date when the stock arrived.
-     *
-     * @param date the date of arrival in "yyyy-MM-dd" format
-     */
-    public void setDateArrived(String date) {
-        try {
+    public void setDateArrived(String date){
+        try{
             this.invoice = formatDate.parse(date);
-        } catch (ParseException err) {
+        } catch(ParseException err){
             err.printStackTrace();
             System.out.println("Cannot parse stock date of " + this.itemName);
         }
+        
+        System.out.println("PresentDate : " + formatDate.format(presentDate));
         this.stockSummary = this.stockSummary + " " + date;
     }
     
-    
-    
-    
-    /**
-     * Sets the expiry date for the stock.
-     *
-     * @param date the expiry date in "yyyy-MM-dd" format
-     */
-    public void setExpiryDate(String date) {
-        try {
+    public void setExpiryDate(String date){
+        try{
             this.expiry = formatDate.parse(date);
-        } catch (ParseException err) {
+        } catch(ParseException err){
             err.printStackTrace();
             System.out.println("Cannot parse expiry date of " + this.itemName);
         }
+        
         checkIfExpired();
+        System.out.println("expired: " + this.isExpired);
         this.stockSummary = this.stockSummary + " " + date;
     }
     
-    
-    
-    
-    
-    /**
-     * Checks if the stock is expired or will expire tomorrow.
-     */
-    public void checkIfExpired() {
+    public void checkIfExpired(){
         int compareDate = this.expiry.compareTo(presentDate);
         long dateDifference = calcDateDifference();
         
-        if (compareDate <= 0) {
+        if(compareDate <= 0){//I feel like im overcomplicating this block
             this.isExpired = true;
         } else {
             this.isExpired = false;
-            this.warnExpiry = dateDifference == 0;
+           
+           this.warnExpiry = dateDifference == 0;
         }
     }
     
-    
-    
-    
-    
-    /**
-     * Calculates the difference in days between the expiry date and the current date.
-     *
-     * @return the difference in days
-     */
-    private long calcDateDifference() {
-        long diff = this.expiry.getTime() - presentDate.getTime();
-        diff = TimeUnit.MILLISECONDS.toDays(diff);
+    private long calcDateDifference(){
+        long diff;
+        diff = this.expiry.getTime()- presentDate.getTime(); //millisecond format
+        diff = TimeUnit.MILLISECONDS.toDays(diff); // day format
+        
+        System.out.println("Difference: " + diff);
+        
         return diff;
     }
     
-    
-    
-    
-    
-    /**
-     * Returns a summary string of the stock for storing or updating files.
-     *
-     * @return a string representing the stock summary
-     */
-    public String getStockSummary() {
+    public String getStockSummary(){ //returns string for storing during file updates
         return amount + " " + this.stockSummary;
     }
     
+    public String getAmount(){
+        return this.amount + " " + unit;
+    }
     
+    public String getInvoice(){
+        return formatDate.format(this.invoice);
+    }
     
+    public String getExpiry(){
+        
+        // if(this.isExpired){
+        //     return formatDate.format(this.expiry) + " !!EXPIRED!!";
+        // }
+        
+        return formatDate.format(this.expiry);
+    }
     
-    /**
-     * Prints detailed information about the stock to the console, including the amount, arrival date,
-     * expiry date, and expiry status.
-     */
-    public void printStock() {
+    public void printStock(){
         String expiryDate = formatDate.format(this.expiry);
         String arrivalDate = formatDate.format(this.invoice);
         
+        
         System.out.print("\t");
-        System.out.printf("%sAmount:%s %-2d %-3s", AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
+        System.out.printf("%sAmount:%s %s %-3s",AnsiAdd.BLUE, AnsiAdd.RESET, this.amount, this.unit);
         System.out.printf("\t%sArrived on:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, arrivalDate);
         System.out.printf("\t%sExpiry:%s %s", AnsiAdd.BLUE, AnsiAdd.RESET, expiryDate);
         
-        if (this.isExpired) {
+        if(this.isExpired){
             System.out.print("\t" + AnsiAdd.RED + "EXPIRED" + AnsiAdd.RESET);
-        } else if (this.warnExpiry) {
-            System.out.print("\t" + AnsiAdd.RED + "EXPIRES TOMORROW" + AnsiAdd.RESET);
+        } else if(this.warnExpiry){
+            System.out.print("\t" + AnsiAdd.RED + "Expires Tomorrow" + AnsiAdd.RESET);
         }
         
         System.out.println();
