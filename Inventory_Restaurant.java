@@ -70,7 +70,6 @@ public class Inventory_Restaurant extends Application{
     public void addInventoryBody(BorderPane pane){
 
         BorderPane inventoryPane = new BorderPane();
-            inventoryPane.setStyle(FX_Utility.fx);
             inventoryPane.setPadding(new Insets(5, 5, 5, 5));
 
         inventory.addStackLayers(inventoryPane);
