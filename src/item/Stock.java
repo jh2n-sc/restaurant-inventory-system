@@ -87,10 +87,15 @@ public class Stock {
         
         if(compareDate <= 0){//I feel like im overcomplicating this block
             this.isExpired = true;
+            this.warnExpiry = false;
         } else {
             this.isExpired = false;
-           
-           this.warnExpiry = dateDifference == 0;
+            
+            if(dateDifference <= 4 && dateDifference >= 0) {
+                this.warnExpiry = true;
+            } else {
+                this.warnExpiry = false;
+            }
         }
     }
     
@@ -118,11 +123,17 @@ public class Stock {
     
     public String getExpiry(){
         
-        // if(this.isExpired){
-        //     return formatDate.format(this.expiry) + " !!EXPIRED!!";
-        // }
         
         return formatDate.format(this.expiry);
+    }
+    
+    public String isExpired(){
+        if(isExpired){
+            return "expired";
+        } else if(warnExpiry){
+            return "warn";
+        }
+        return null;
     }
     
     public void printStock(){

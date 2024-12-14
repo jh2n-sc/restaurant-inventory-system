@@ -13,12 +13,16 @@ import java.util.Scanner;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -42,6 +46,8 @@ public class Inventory {
    private Label optionClicked;
    private BorderPane transactionPane = new BorderPane();
    private StackPane stack;
+   private GridPane grid;
+//   private BorderPane storeInventoryPane;
    
    
    public Inventory(){
@@ -77,13 +83,16 @@ public class Inventory {
          System.out.println("!!File was not Found!!");
       }
       
-      categoryNames = names;
+      categoryNames = names.toLowerCase();
    }
    
    
    public void addCategory(String name){
       Category newcategory = new Category(name);
       categories.add(newcategory);
+      categoryNames = categoryNames + ";" + name;
+      addGridTab(this.grid, (BorderPane) this.grid.getParent());
+      updateFile();
    }
    
    public void updateFile(){
@@ -136,9 +145,9 @@ public class Inventory {
    }
    
    // FX
-   public void addStackLayers(BorderPane inventoryPane){
+   private void addGridTab(GridPane grid, BorderPane inventoryPane){
+      grid.getChildren().clear();
       Category current;
-      GridPane grid = FX_Utility.createGrid();
       
       addCategoryTab(categories.size() + 1, grid);
       
@@ -156,63 +165,90 @@ public class Inventory {
             label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
          }
       }
-      
+   }
+   
+   public void addStackLayers(BorderPane inventoryPane){
+      this.grid = FX_Utility.createGrid();
+      addGridTab(grid, inventoryPane);
       
       inventoryPane.setTop(grid);
       inventoryPane.setCenter(this.stack);
       
+//      this.storeInventoryPane = inventoryPane; //only use for updates
    }
    
    private void addCategoryTab(int columnIndex, GridPane grid){
       Label label = FX_Utility.createTabLabel("+");
-      label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(177, 30, 17); -fx-background-radius: 10px 10px 0 0;");
+      label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(160, 13, 0); -fx-background-radius: 10px 10px 0 0;");
       grid.add(label, columnIndex, 0);
       
       BorderPane addCategoryPane = new BorderPane();
       Label title = new Label("Add Category");
-      title.setFont(Font.font("General sans", FontWeight.BLACK, 80));
-      title.setTextFill(Color.WHITE);
-      title.setPrefHeight(30);
-      title.setPrefWidth(Double.MAX_VALUE);
-      title.setTextAlignment(TextAlignment.CENTER);
-      title.setAlignment(Pos.CENTER);
-      title.setPadding(new Insets(20, 4, 20, 4));
-      title.setStyle(FX_Utility.fx);
-      addCategoryPane.setTop(title);
       
       TextField field = new TextField();
       
       field.maxWidthProperty().bind(addCategoryPane.widthProperty().multiply(0.5));
-      field.setPrefHeight(50);
-      field.setText
-      addCategoryPane.setCenter(field);
+      Button btn = new Button("Create Category");
+      btn.prefWidthProperty().bind(addCategoryPane.widthProperty().multiply(0.25));
+      setAddFunction(field, btn);
       
-      addCategoryPane.setStyle(FX_Utility.fx);
+      VBox box = FX_Utility.boxInputCreate(title, field, btn);
+      addCategoryPane.setCenter(box);
+      BorderPane.setAlignment(box, Pos.BOTTOM_CENTER);
+      
+      addCategoryPane.setStyle("-fx-border-radius: 50px; -fx-border-color: white; -fx-border-radius: 1px;");
+      addCategoryPane.setId("category");
       
       this.stack.getChildren().add(addCategoryPane);
       
       addTransactionPaneFunctions(label, addCategoryPane);
    }
    
+   private void setAddFunction(TextField field, Button btn){
+      btn.setOnMouseClicked(click -> {
+         if(field.getText().isEmpty()){
+            FX_Utility.showAlert(Alert.AlertType.ERROR, this.stack.getScene().getWindow(), "ERROR", "Please provide an input");
+            return;
+         }
+         
+         String text = field.getText();
+         String textEdited = text.toLowerCase();
+         if(categoryNames.contains(textEdited)){
+            FX_Utility.showAlert(Alert.AlertType.ERROR, this.stack.getScene().getWindow(), "ERROR", "Category name already exists");
+            return;
+         }
+         addCategory(text);
+         FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, this.stack.getScene().getWindow(), "Success!!", "Category " + text + " has been created.");
+         System.out.println("btn: " + click.getTarget());
+      });
+   }
    
    private void addStackFunctions(StackPane stack, BorderPane innerPane, Label label){
       label.setOnMouseClicked(event -> {
          
          if(this.prevClickedCategory == label){
             return;
+//            if(this.optionClicked == null){
+//               return;
+//            } else {
+//               this.optionClicked = null;
+//            }
+         } else {
+            FX_Utility.changeColorOnClick(label, this.prevClickedCategory);
          }
          
-         FX_Utility.changeColorOnClick(label, this.prevClickedCategory);
          
          stack.getChildren().remove(innerPane);
          stack.getChildren().add(innerPane);
          
          this.transactionPane.setCenter(null);
-         this.optionClicked = null;
          
          System.out.println("clicked " + event.getClass());
          
          this.prevClickedCategory = label;
+         if(this.optionClicked != null){
+            this.optionClicked = null;
+         }
       });
       
       this.prevClickedCategory = label;

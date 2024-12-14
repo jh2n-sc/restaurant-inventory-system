@@ -66,6 +66,19 @@ public class Category {
    }
    
    private void initializeItems(File categoryItems){
+      try{
+         if(!categoryItems.exists()){
+            boolean wasCreated = categoryItems.createNewFile();
+            if(wasCreated){
+               System.out.println("Your file was created");
+            }
+         }
+      } catch(IOException err){
+         err.printStackTrace();
+         System.out.println("Cannot create file " + this.category_name);
+      }
+      
+      
       try(Scanner scanItems = new Scanner(categoryItems)){
          //temporary variables
          Item current;
