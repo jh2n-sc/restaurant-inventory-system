@@ -3,15 +3,20 @@ import java.util.Date;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -25,6 +30,7 @@ public class FX_Utility {
     static String fontFX = "-fx-font-size: ";
     static String tableFX = ".scroll-bar:vertical, .scroll-bar:horizontal {" + " -fx-opacity: 0;" + "}";
     static String alignFX = "-fx-alignment: center;";
+    static DropShadow dropShadow = new DropShadow();
 
     public static void applyBackground(StackPane stack, Color color){
         Rectangle rectangle = new Rectangle();
@@ -135,6 +141,37 @@ public class FX_Utility {
     public static void changeColorOnClick(Label label, Label prevLabel){
         label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(67, 20, 7); -fx-background-radius: 10px 10px 0 0;");
         prevLabel.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(127, 90, 77); -fx-background-radius: 10px 10px 0 0;");
+    }
+
+    public static VBox boxInputCreate(Label title, TextField field, Button btn){
+        dropShadow.setBlurType(BlurType.THREE_PASS_BOX);
+        dropShadow.setColor(Color.rgb(10, 10, 10, 0.2));
+        dropShadow.setRadius(20);
+        dropShadow.setOffsetX(0);
+        dropShadow.setOffsetY(0);
+        dropShadow.setSpread(0.5);
+
+        VBox box = new VBox();
+            box.setSpacing(60);
+            box.setAlignment(Pos.BASELINE_CENTER);
+
+        title.setFont(Font.font("General sans", FontWeight.BLACK, 80));
+        title.setTextFill(Color.WHITE);
+        title.setPrefHeight(30);
+        title.setPrefWidth(Double.MAX_VALUE);
+        title.setAlignment(Pos.CENTER);
+
+        field.setPrefHeight(50);
+        field.setStyle("-fx-font-size: 25px; -fx-alignment: center;");
+
+        btn.setPrefHeight(50);
+        btn.setTextFill(Color.WHITE);
+        btn.setStyle("-fx-alignment: center; -fx-background-radius: 20px; -fx-background-color: rgb(67, 67, 67); -fx-font-size: 30px;");
+        btn.setEffect(dropShadow);
+
+        box.getChildren().addAll(title, field, btn);
+
+        return box;
     }
 
 
