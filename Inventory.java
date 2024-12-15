@@ -185,7 +185,7 @@ public class Inventory {
     }
 
     private void removeCategoryTab(int columnIndex, GridPane grid){
-        Label label = FX_Utility.createTabLabel("-");
+        Label label = FX_Utility.createTabLabel("–");
             label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(177, 70, 17); -fx-background-radius: 10px 10px 0 0;");
             grid.add(label, columnIndex, 0);
 

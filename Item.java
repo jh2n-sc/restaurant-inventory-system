@@ -8,10 +8,14 @@ import java.util.Scanner;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -205,7 +209,6 @@ public class Item {
             this.stockTable.prefWidthProperty().bind(viewPane.widthProperty());
             tablePrefWidth = true;
         }
-
         
         ObservableList<Stock> stocklist = FXCollections.observableArrayList(this.stocks);
 
@@ -213,9 +216,10 @@ public class Item {
 
         addHeader(headerPane);
         viewPane.setCenter(stockTable);
+        viewPane.setBottom(createBottomContent());
     }
 
-    private void addHeader(BorderPane viewPane){
+    private void addHeader(BorderPane headerPane){
         VBox box = new VBox();
             box.setSpacing(4);
         int totalInt = (int) this.totalStock;
@@ -240,8 +244,49 @@ public class Item {
 
         box.getChildren().addAll(name, total);
 
-        box.prefWidthProperty().bind(viewPane.widthProperty());
-        viewPane.setCenter(box);
+        box.prefWidthProperty().bind(headerPane.widthProperty());
+        headerPane.setCenter(box);
+    }
+
+    private BorderPane createBottomContent(){
+        BorderPane pane = new BorderPane();
+            pane.setPadding(new Insets(1, 1, 1, 1));
+        VBox box = new VBox();
+            box.setSpacing(2);
+            box.prefWidthProperty().bind(pane.widthProperty());
+        pane.setCenter(box);
+
+        String[] array = {"Add Stock", "Withdraw Stock"};
+
+        for(int i = 0; i < 2; i++){
+            Label label = new Label(array[i]);
+                label.setFont(Font.font("sans serif", FontWeight.BLACK, 18));
+                label.setTextFill(Color.WHITE);
+                label.setPrefHeight(30);
+                label.setMaxWidth(Double.MAX_VALUE);
+                label.setPadding(new Insets(2, 10, 2, 10));
+
+                label.setStyle("-fx-background-color: rgb(177, 62, 17); -fx-background-radius: 5px 5px 5px 5px; -fx-alignment: center");
+
+                box.getChildren().add(label);
+
+                BorderPane contentPane = createContent(array[i]);
+            Inventory.addTransactionPaneFunctions(label, contentPane);
+        }
+
+        return pane;
+    }
+    
+    private BorderPane createContent(String text){
+        BorderPane contentPane = new BorderPane();
+            TextField field = new TextField();
+            Button btn = new Button(text);
+
+            FX_Utility.contentPaneField(contentPane, field, btn, text);
+
+            // if(text.equals("Add Stock")){} else {}
+
+        return contentPane;
     }
     //FX section
 

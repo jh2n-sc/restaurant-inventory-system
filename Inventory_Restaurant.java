@@ -56,7 +56,6 @@ public class Inventory_Restaurant extends Application{
     public void addHeaderLayer(BorderPane pane){
         TilePane tile = new TilePane(Orientation.HORIZONTAL);
             tile.setMinHeight(50);
-            tile.setStyle(FX_Utility.fx);
             tile.setPrefWidth(990);
             tile.setPadding(new Insets(5, 5, 5, 5));
             tile.setVgap(5);;
