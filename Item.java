@@ -344,7 +344,13 @@ public class Item {
     // NEW METHODS ADDED BY JEM
 
     public void updateFile() {
-        String categoryFileName = "./content/" + this.category.getCategoryName() + ".txt"; // Construct file path using category name
+        String categoryName = this.category.getCategoryName();
+
+        if (categoryName.contains(" ")){
+            categoryName = categoryName.replaceAll("\\s+", "_"); 
+        }
+
+        String categoryFileName = "./content/" + categoryName + ".txt"; // Construct file path using category name
         File categoryFile = new File(categoryFileName);
     
         StringBuilder fileContent = new StringBuilder();
@@ -432,10 +438,12 @@ public class Item {
             if (currentAmount > amount) {
                 currentStock.setAmount(-amount);
                 this.totalStock -= amount;
+                InventoryLogger.logWithdraw(this.item_Name, amount, this.category.getCategoryName());
                 amount = 0;
             } else {
                 amount -= currentAmount;
                 this.totalStock -= currentAmount;
+                InventoryLogger.logWithdraw(this.item_Name, amount, this.category.getCategoryName());
                 iterator.remove();
             }
         }
