@@ -52,6 +52,9 @@ public class Item {
     // for referencing
     Category category;
 
+    // INSTANCE ADDED BY JEM
+    private BorderPane headerPane;
+
     public Item(String name, Category category){
         this.item_Name = name;
         this.category = category;
@@ -229,34 +232,34 @@ public class Item {
         viewPane.setBottom(createBottomContent());
     }
 
-    private void addHeader(BorderPane headerPane){
-        VBox box = new VBox();
-            box.setSpacing(4);
-        int totalInt = (int) this.totalStock;
-        String totalString = "";
-        if(totalInt == this.totalStock){
-            totalString = totalInt + " " + this.unit;
+    // private void addHeader(BorderPane headerPane){
+    //     VBox box = new VBox();
+    //         box.setSpacing(4);
+    //     int totalInt = (int) this.totalStock;
+    //     String totalString = "";
+    //     if(totalInt == this.totalStock){
+    //         totalString = totalInt + " " + this.unit;
             
-        } else {
-            totalString = this.totalStock + " " + this.unit;
-        }
+    //     } else {
+    //         totalString = this.totalStock + " " + this.unit;
+    //     }
 
-        Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);
-            name.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
-            name.setStyle(null);
-            name.setTextAlignment(TextAlignment.LEFT);
-            name.setMaxWidth(Double.MAX_VALUE);
-        Label total = FX_Utility.createTabLabel("Total: " + totalString);
-            total.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
-            total.setStyle(null);
-            total.setTextAlignment(TextAlignment.LEFT);
-            total.setMaxWidth(Double.MAX_VALUE);
+    //     Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);
+    //         name.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+    //         name.setStyle(null);
+    //         name.setTextAlignment(TextAlignment.LEFT);
+    //         name.setMaxWidth(Double.MAX_VALUE);
+    //     Label total = FX_Utility.createTabLabel("Total: " + totalString);
+    //         total.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+    //         total.setStyle(null);
+    //         total.setTextAlignment(TextAlignment.LEFT);
+    //         total.setMaxWidth(Double.MAX_VALUE);
 
-        box.getChildren().addAll(name, total);
+    //     box.getChildren().addAll(name, total);
 
-        box.prefWidthProperty().bind(headerPane.widthProperty());
-        headerPane.setCenter(box);
-    }
+    //     box.prefWidthProperty().bind(headerPane.widthProperty());
+    //     headerPane.setCenter(box);
+    // }
 
     private BorderPane createBottomContent(){
         BorderPane pane = new BorderPane();
@@ -286,6 +289,12 @@ public class Item {
 
         return pane;
     }
+
+
+
+
+
+    // UPDATED METHODS BY JEM
     
     private BorderPane createContent(String text) {
         BorderPane contentPane = new BorderPane();
@@ -339,9 +348,49 @@ public class Item {
     
         return contentPane;
     }
+
+    private void addHeader(BorderPane headerPane) {
+        this.headerPane = headerPane;
+        VBox box = new VBox();
+        box.setSpacing(4);
+        int totalInt = (int) this.totalStock;
+        String totalString = "";
+        if (totalInt == this.totalStock) {
+            totalString = totalInt + " " + this.unit;
+        } else {
+            totalString = this.totalStock + " " + this.unit;
+        }
     
+        Label name = FX_Utility.createTabLabel("Item: " + this.item_Name);
+        name.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+        name.setStyle(null);
+        name.setTextAlignment(TextAlignment.LEFT);
+        name.setMaxWidth(Double.MAX_VALUE);
+        Label total = FX_Utility.createTabLabel("Total: " + totalString);
+        total.setFont(Font.font("sans serif", FontWeight.BLACK, 25));
+        total.setStyle(null);
+        total.setTextAlignment(TextAlignment.LEFT);
+        total.setMaxWidth(Double.MAX_VALUE);
     
+        box.getChildren().addAll(name, total);
+    
+        box.prefWidthProperty().bind(headerPane.widthProperty());
+        headerPane.setCenter(box);
+    }
+    
+
+    private void refreshHeader() {
+        addHeader(this.headerPane);
+    }
+    
+
     // NEW METHODS ADDED BY JEM
+
+    private void refreshHeader() {
+        // Call this method to refresh the header with updated total stock
+        BorderPane headerPane = // get the reference to your headerPane;
+        addHeader(headerPane);
+    }    
 
     public void updateFile() {
         String categoryName = this.category.getCategoryName();
@@ -425,6 +474,9 @@ public class Item {
         }
     
         this.totalStock += amount;
+
+        this.category.setData();
+        refreshHeader();
         updateTable();
         updateFile();
     }
@@ -453,6 +505,8 @@ public class Item {
             this.unit = "unit";
         }
         
+        this.category.setData();
+        refreshHeader();
         updateTable();
         updateFile();
     }    

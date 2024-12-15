@@ -192,11 +192,11 @@ public class Category {
     //  CLI
 
     // FX
-    public void setData(){
-        ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
-        this.dataList = data;
-        searchSort(fieldStore);
-    }
+    // public void setData(){
+    //     ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
+    //     this.dataList = data;
+    //     searchSort(fieldStore);
+    // }
 
     public void addTable(BorderPane innerPane, BorderPane inventoryPane, TextField field){
         if(!this.tablePrefWidth){
@@ -355,27 +355,31 @@ public class Category {
         });
     }
 
-    public void searchSort(TextField field){
-        FilteredList<Item> listFilter = new FilteredList<>(dataList, item  -> true);
+    // public void searchSort(TextField field){
+    //     FilteredList<Item> listFilter = new FilteredList<>(dataList, item  -> true);
 
-        field.textProperty().addListener((observable, oldvalue, newvalue) -> {
-            listFilter.setPredicate(item -> {
-                if(newvalue == null || newvalue.isEmpty()){
-                    return true;
-                }
+    //     field.textProperty().addListener((observable, oldvalue, newvalue) -> {
+    //         listFilter.setPredicate(item -> {
+    //             if(newvalue == null || newvalue.isEmpty()){
+    //                 return true;
+    //             }
 
-                String newvalueEdit = newvalue.toLowerCase();
+    //             String newvalueEdit = newvalue.toLowerCase();
 
-                return item.getItem_Name().toLowerCase().contains(newvalueEdit);
-            });
-        });
+    //             return item.getItem_Name().toLowerCase().contains(newvalueEdit);
+    //         });
+    //     });
 
-        SortedList<Item> sorted = new SortedList<>(listFilter);
+    //     SortedList<Item> sorted = new SortedList<>(listFilter);
 
-        sorted.comparatorProperty().bind(this.itemTable.comparatorProperty());
+    //     sorted.comparatorProperty().bind(this.itemTable.comparatorProperty());
 
-        this.itemTable.setItems(sorted);
-    }
+    //     this.itemTable.setItems(sorted);
+    // }
+
+
+
+
 
     // UPDATED ADDGRIDBUTTON METHOD BY JEM
 
@@ -400,6 +404,35 @@ public class Category {
         }
         return grid;
     }    
+
+    public void searchSort(TextField searchField) {
+        FilteredList<Item> filteredData = new FilteredList<>(this.dataList, b -> true);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(item -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return item.getItem_Name().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+    
+        SortedList<Item> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(this.itemTable.comparatorProperty());
+    
+        this.itemTable.setItems(sortedData);
+        this.itemTable.refresh(); // Refresh the TableView
+    }
+
+    public void setData() {
+        ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
+        this.dataList = data;
+        searchSort(fieldStore);
+        this.itemTable.setItems(dataList); // Set data list
+        this.itemTable.refresh(); // Refresh the TableView
+    }
+    
+    
 
     // FX
 
