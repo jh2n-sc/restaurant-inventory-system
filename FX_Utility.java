@@ -176,6 +176,23 @@ public class FX_Utility {
            invoiceColumn.setCellValueFactory(new PropertyValueFactory<>("invoice"));
            invoiceColumn.setStyle(alignFX);
            invoiceColumn.setSortable(false);
+           invoiceColumn.setCellFactory(column -> new TableCell<>(){
+                @Override
+                protected void updateItem(Date invoice, boolean empty){
+                    super.updateItem(invoice, empty);
+                    if(empty || invoice == null){
+                        setText(null);
+                    } else {
+                        Stock stock = getTableRow().getItem();
+
+                        if(stock != null){
+                            setText(String.format("%s", stock.getInvoiceString()));
+                        } else {
+                            setText(null);
+                        }
+                    }
+                }
+           });
 
         TableColumn<Stock, Date> expiryColumn = new TableColumn<>("Expiry Date");
            expiryColumn.prefWidthProperty().bind(stockTable.widthProperty().multiply(0.4));
@@ -183,6 +200,23 @@ public class FX_Utility {
            expiryColumn.setCellValueFactory(new PropertyValueFactory<>("expiry"));
            expiryColumn.setStyle(alignFX);
            expiryColumn.setSortable(false);
+           expiryColumn.setCellFactory(column -> new TableCell<>(){
+            @Override
+            protected void updateItem(Date expiry, boolean empty){
+                super.updateItem(expiry, empty);
+                if(empty || expiry == null){
+                    setText(null);
+                } else {
+                    Stock stock = getTableRow().getItem();
+
+                    if(stock != null){
+                        setText(String.format("%s", stock.getExpiryString()));
+                    } else {
+                        setText(null);
+                    }
+                }
+            }
+       });
 
         stockTable.getColumns().add(amountColumn);
         stockTable.getColumns().add(invoiceColumn);

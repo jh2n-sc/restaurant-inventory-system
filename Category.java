@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -33,9 +37,11 @@ public class Category {
     private boolean isEmpty;
     private String directory = "./content/";
     //Table fx
-    private TableView<Item> itemTable;
+    public TableView<Item> itemTable;
     private boolean tablePrefWidth = false;
     private String itemNames;
+    private ObservableList<Item> dataList;
+    private static TextField fieldStore;
 
     public Category(String name){
         this.category_name = name;
@@ -188,15 +194,17 @@ public class Category {
     // FX
     public void setData(){
         ObservableList<Item> data = FXCollections.observableArrayList(this.itemList);
-        this.itemTable.setItems(data);
+        this.dataList = data;
+        searchSort(fieldStore);
     }
 
-    public void addTable(BorderPane innerPane, BorderPane inventoryPane){
+    public void addTable(BorderPane innerPane, BorderPane inventoryPane, TextField field){
         if(!this.tablePrefWidth){
             this.itemTable.prefWidthProperty().bind(innerPane.widthProperty());
             tablePrefWidth = true;
         }
         
+        fieldStore = field;
         setData();
 
         GridPane grid = addGridButtons();
@@ -342,6 +350,29 @@ public class Category {
             }
         });
     }
+
+    public void searchSort(TextField field){
+        FilteredList<Item> listFilter = new FilteredList<>(dataList, item  -> true);
+
+        field.textProperty().addListener((observable, oldvalue, newvalue) -> {
+            listFilter.setPredicate(item -> {
+                if(newvalue == null || newvalue.isEmpty()){
+                    return true;
+                }
+
+                String newvalueEdit = newvalue.toLowerCase();
+
+                return item.getItem_Name().toLowerCase().contains(newvalueEdit);
+            });
+        });
+
+        SortedList<Item> sorted = new SortedList<>(listFilter);
+
+        sorted.comparatorProperty().bind(this.itemTable.comparatorProperty());
+
+        this.itemTable.setItems(sorted);
+    }
+
     // FX
 
 

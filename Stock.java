@@ -123,7 +123,11 @@ public class Stock {
         return this.invoice;
     }
 
-    public String getExpiry(){
+    public Date getExpiry(){
+        return this.expiry;
+    }
+
+    public String getExpiryString(){
 
         return formatdate.format(this.expiry);
     }

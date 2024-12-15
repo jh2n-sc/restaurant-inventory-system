@@ -7,22 +7,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 
 public class Inventory {
 
@@ -132,7 +123,9 @@ public class Inventory {
 
     // FX
 
-    private void addGridTab(GridPane grid, BorderPane inventoryPane){
+    
+
+    private void addGridTab(GridPane grid, BorderPane inventoryPane, TextField field){
         grid.getChildren().clear();
         Category current;
         addCategoryTab(categories.size() + 1, grid);
@@ -144,7 +137,7 @@ public class Inventory {
             Label label = FX_Utility.createTabLabel(current.category_name);
                     grid.add(label, i, 0);
             stack.getChildren().add(innerPane);
-            current.addTable(innerPane, inventoryPane);
+            current.addTable(innerPane, inventoryPane, field);
 
             addStackFunctions(stack, innerPane, label);
 
@@ -154,9 +147,9 @@ public class Inventory {
         }
     }
 
-    public void addStackLayers(BorderPane inventoryPane){
+    public void addStackLayers(BorderPane inventoryPane, TextField field){
         this.grid = FX_Utility.createGrid();
-        addGridTab(grid, inventoryPane);
+        addGridTab(grid, inventoryPane, field);
 
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(stack);
@@ -198,6 +191,7 @@ public class Inventory {
 
             addCategory(text);
             FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, stack.getScene().getWindow(), "Success!!", "Category " + text + " has been created.");
+            transactionPane.getChildren().clear();
 
             System.out.println("btn: " + click.getTarget());
         });
@@ -220,6 +214,9 @@ public class Inventory {
             stack.getChildren().remove(innerPane);
             stack.getChildren().add(innerPane);
             transactionPane.getChildren().clear();
+            if(stack.getChildren().contains(transactionPane)){
+                stack.getChildren().remove(transactionPane);
+            }
             System.out.println("clicked " + event.getClass());
 
             this.prevClickedCategory = label;
