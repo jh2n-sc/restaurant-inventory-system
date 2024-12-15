@@ -128,7 +128,7 @@ public class FX_Utility {
                         if(current != null){
                             setText(String.format("%s", current.getLatestStockString()));
                         } else {
-                            setText(null);
+                            setText("Not Yet Restocked");
                         }
                         
                     }

@@ -94,7 +94,7 @@ public class Item {
         while(iterateStock.hasNext()){
             current = iterateStock.next();
             if(dateArrival.equals(current.getInvoiceString())){
-                if(dateExpiry.equals(current.getExpiry())){
+                if(dateExpiry.equals(current.getExpiryString())){
                     return current;
                 }
             }

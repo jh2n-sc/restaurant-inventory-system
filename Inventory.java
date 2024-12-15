@@ -28,6 +28,7 @@ public class Inventory {
     private static BorderPane transactionPane = new BorderPane();
     private static StackPane stack;
     private GridPane grid;
+    private static TextField fieldStore;
 
     public Inventory(){
         this.categoriesExist =  false;
@@ -65,13 +66,21 @@ public class Inventory {
     }
 
 
-    public void addCategory(String name){
+    private void addCategory(String name){
         Category newcategory = new Category(name);
         categories.add(newcategory);
         categoryNames = categoryNames + name.toLowerCase() + ";";
         addGridTab(this.grid, (BorderPane) this.grid.getParent());
         updateFile();
     }
+
+    private void removeCategory(Category remove){
+        categories.remove(remove);
+        categoryNames = categoryNames.replace(remove.category_name.toLowerCase(), "");
+        addGridTab(this.grid, (BorderPane) this.grid.getParent());
+        updateFile();
+    }
+    
 
     public void updateFile(){
         try{
@@ -125,9 +134,10 @@ public class Inventory {
 
     
 
-    private void addGridTab(GridPane grid, BorderPane inventoryPane, TextField field){
+    private void addGridTab(GridPane grid, BorderPane inventoryPane){
         grid.getChildren().clear();
         Category current;
+        removeCategoryTab(categories.size() + 2, grid);
         addCategoryTab(categories.size() + 1, grid);
         
         for(int i = categories.size() - 1; i >= 0; i--){
@@ -137,7 +147,7 @@ public class Inventory {
             Label label = FX_Utility.createTabLabel(current.category_name);
                     grid.add(label, i, 0);
             stack.getChildren().add(innerPane);
-            current.addTable(innerPane, inventoryPane, field);
+            current.addTable(innerPane, inventoryPane, fieldStore);
 
             addStackFunctions(stack, innerPane, label);
 
@@ -149,7 +159,8 @@ public class Inventory {
 
     public void addStackLayers(BorderPane inventoryPane, TextField field){
         this.grid = FX_Utility.createGrid();
-        addGridTab(grid, inventoryPane, field);
+        fieldStore = field;
+        addGridTab(grid, inventoryPane);
 
         inventoryPane.setTop(grid);
         inventoryPane.setCenter(stack);
@@ -171,6 +182,63 @@ public class Inventory {
             addCategoryPane.setId("category");
 
         addTransactionPaneFunctions(label, addCategoryPane);
+    }
+
+    private void removeCategoryTab(int columnIndex, GridPane grid){
+        Label label = FX_Utility.createTabLabel("-");
+            label.setStyle("-fx-border-radius: 10px 10px 0 0; -fx-background-color: rgb(177, 70, 17); -fx-background-radius: 10px 10px 0 0;");
+            grid.add(label, columnIndex, 0);
+
+        BorderPane removeCategoryPane = new BorderPane();
+            TextField field = new TextField();  
+            Button btn = new Button("Remove Category");      
+
+            FX_Utility.contentPaneField(removeCategoryPane, field, btn, "Remove Category");
+            
+            setRemoveFunction(field, btn);
+                   
+            removeCategoryPane.setId("category");
+
+        addTransactionPaneFunctions(label, removeCategoryPane);
+    }
+
+    private void setRemoveFunction(TextField field, Button btn){
+        btn.setOnMouseClicked(click -> {
+
+            if(field.getText().isEmpty()){
+                FX_Utility.showAlert(Alert.AlertType.ERROR, stack.getScene().getWindow(), "ERROR", "Please provide an input");
+                return;
+            }
+            
+            String text = field.getText();
+            String textEdited = text.toLowerCase();
+
+            if(!categoryNames.contains(textEdited)){
+                FX_Utility.showAlert(Alert.AlertType.ERROR, stack.getScene().getWindow(), "ERROR", "Category name does not exist");
+                return;
+            }
+
+            Category remove = null;
+
+            for(int i = 0; i < this.categories.size(); i++){
+                Category current = this.categories.get(i);
+                if(current.category_name.toLowerCase().equals(textEdited)){
+                    remove = current;
+                    break;
+                }
+            }
+
+            if(remove == null){
+                FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, field.getScene().getWindow(), "ERROR!!", "Category " + text + " was not found.");
+                    return;
+            }
+
+            removeCategory(remove);
+            FX_Utility.showAlert(Alert.AlertType.CONFIRMATION, stack.getScene().getWindow(), "Success!!", "Category " + text + " has been removed.");
+            transactionPane.getChildren().clear();
+
+            System.out.println("btn: " + click.getTarget());
+        });
     }
 
     private void setAddFunction(TextField field, Button btn){
