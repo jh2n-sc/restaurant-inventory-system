@@ -1,0 +1,62 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Inventory_Restaurant",
+      "request": "launch",
+      "vmArgs": "--module-path c:\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+      "mainClass": "Inventory_Restaurant",
+      "projectName": "restaurant-inventory-system-branchNiErick-theREAL_DEAL_8d14bf13"
+    },
+    {
+      "type": "java",
+      "name": "Inventory_Restaurant",
+      "request": "launch",
+      "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+      "mainClass": "Inventory_Restaurant",
+      "projectName": "restaurant-inventory-system_d925861b"
+    },
+    {
+      "type": "java",
+      "name": "testMain",
+      "request": "launch",
+      "mainClass": "testMain",
+      "projectName": "restaurant-inventory-system_d925861b"
+    },
+    {
+      "type": "java",
+      "name": "Inventory_Restaurant",
+      "request": "launch",
+      "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+      "mainClass": "Inventory_Restaurant",
+      "projectName": "INVENTORY_68754b6f"
+    },
+    {
+      "type": "java",
+      "name": "Current File",
+      "vmArgs": "--module-path c:\\openjfx-21.0.5_windows-x64_bin-sdk\\javafx-sdk-21.0.5\\lib --add-modules javafx.controls",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/Asus/Desktop/SampleFolder/C++/DSA_1015",
+      "program": "c:/Users/Asus/Desktop/SampleFolder/C++/DSA_1015/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

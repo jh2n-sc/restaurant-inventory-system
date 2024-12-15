@@ -1,6 +1,6 @@
 Aling Nena's Kitchen
-SeaFood
 Vegetables
-Meat
+Meat Stand
 Fruits
-Drinks
+SeaFood
+Dairy

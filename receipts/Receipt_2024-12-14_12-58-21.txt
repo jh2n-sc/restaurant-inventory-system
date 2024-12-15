@@ -1,3 +1,0 @@
-Withdrawn: 105.0 kg of Chicken
-Withdrawn/Deducted: 105.0 kg of Chicken
-Withdrawn/Added: -50.0 kg of Chicken

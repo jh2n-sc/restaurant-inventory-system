@@ -1,8 +1,0 @@
-Withdrawn: 105.0 kg of Chicken
-Withdrawn: 18.0 sacks of Tomato
-Withdrawn/Deducted: 7.0 kg of Chicken
-Withdrawn/Deducted: 9.0 sacks of Tomato
-Withdrawn/Deducted: -7.0 kg of Chicken
-Withdrawn/Deducted: -8.0 sacks of Tomato
-Deposited: 17.0 sacks of Tomato
-Deposited: 105.0 kg of Chicken
