@@ -1,6 +1,6 @@
 # Compiled class file
 *.class
-
+#jhn-was-here
 # Log file
 *.log
 
